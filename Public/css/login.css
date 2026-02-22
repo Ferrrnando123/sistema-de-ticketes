@@ -1,0 +1,66 @@
+/* public/css/login.css */
+:root {
+    --primary-color: #76bc21; /* Verde de la imagen */
+    --dark-blue: #1a237e;
+    --bg-color: #f4f7fe;
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.login-body {
+    background-color: var(--bg-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-box {
+    background: #ffffff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+}
+
+.title { color: var(--dark-blue); font-size: 24px; margin-bottom: 8px; }
+.subtitle { color: #666; font-size: 14px; margin-bottom: 2rem; }
+
+.input-group { text-align: left; margin-bottom: 1.5rem; }
+.input-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #333; }
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    box-sizing: border-box;
+    transition: border 0.3s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.btn-primary {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-primary:hover { background-color: #65a31d; }
+.link { color: #0066cc; text-decoration: none; font-size: 13px; }
+.footer-text { margin-top: 1.5rem; color: #555; font-size: 14px; }
