@@ -9,7 +9,7 @@
 <body class="login-body">
     <div class="login-container">
         <div class="login-box">
-            <h1 class="title">Campus IT Tickets</h1>
+            <h1 class="title">Campus Tickets</h1>
             <p class="subtitle">Gestión de Infraestructura UDB</p>
             
             <?php if(isset($_GET['registrado'])): ?>
@@ -20,22 +20,19 @@
 
             <form action="index.php?action=procesar_login" method="POST">
                 <div class="input-group">
-                    <label for="usuario">Dirección de email o usuario</label>
-                    <input type="text" id="usuario" name="usuario" required placeholder="ejemplo@udb.edu.sv">
+                    <label for="usuario">Correo Institucional</label>
+                    <input type="email" id="usuario" name="usuario" required placeholder="usuario@udb.edu.sv">
                 </div>
 
                 <div class="input-group">
                     <label for="password">Clave</label>
                     <input type="password" id="password" name="password" required>
-                    <div class="form-footer">
-                        <a href="#" class="link">¿Olvidó su clave?</a>
-                    </div>
                 </div>
 
                 <button type="submit" class="btn-primary">Iniciar sesión</button>
             </form>
 
-            <p class="footer-text">¿No tiene una cuenta? <a href="index.php?action=registro" class="link">Regístrese</a></p>
+            <p class="footer-text">Acceso exclusivo para personal y alumnos UDB</p>
         </div>
     </div>
 </body>
