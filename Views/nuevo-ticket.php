@@ -33,7 +33,7 @@
         </div>
 
         <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden">
-            <form action="index.php?action=guardar_ticket" method="POST" class="p-8 space-y-6">
+            <form id="ticketForm" action="index.php?action=guardar_ticket" method="POST" class="p-8 space-y-6">
                 
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide">¿Qué sucede?</label>
@@ -88,8 +88,8 @@
 
                 <div class="flex items-center justify-end gap-4 pt-4 border-t border-slate-100">
                     <a href="index.php?action=dashboard" class="text-slate-400 hover:text-slate-600 font-bold text-sm px-4">Cancelar</a>
-                    <button type="submit" class="bg-[#1e293b] text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-slate-800 transition-all shadow-lg flex items-center gap-2">
-                        <i class="fas fa-paper-plane"></i> Enviar Reporte
+                    <button type="submit" id="submitBtn" class="bg-[#1e293b] text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-slate-800 transition-all shadow-lg flex items-center gap-2">
+                        <i class="fas fa-paper-plane" id="submitIcon"></i> <span id="btnText">Enviar Reporte</span>
                     </button>
                 </div>
             </form>
@@ -104,5 +104,21 @@
             </p>
         </div>
     </main>
+
+    <script>
+        document.getElementById('ticketForm').addEventListener('submit', function() {
+            const btn = document.getElementById('submitBtn');
+            const icon = document.getElementById('submitIcon');
+            const text = document.getElementById('btnText');
+            
+            // Deshabilitar el botón para evitar múltiples clics
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            // Cambiar el icono y el texto para dar feedback visual
+            icon.className = 'fas fa-spinner fa-spin';
+            text.innerText = 'Enviando...';
+        });
+    </script>
 </body>
 </html>
