@@ -9,7 +9,7 @@
 <body class="login-body">
     <div class="login-container">
         <div class="login-box">
-            <h1 class="title">Campus IT Tickets</h1>
+            <h1 class="title">Campus Tickets</h1>
             <p class="subtitle">Gestión de Infraestructura UDB</p>
             
             <?php if(isset($_GET['registrado'])): ?>
