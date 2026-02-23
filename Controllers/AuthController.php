@@ -29,6 +29,7 @@ class AuthController {
                 $_SESSION['nombre'] = $user['user_metadata']['full_name'] ?? explode('@', $email)[0];
                 $_SESSION['rol'] = $rol;
                 $_SESSION['access_token'] = $data['access_token'];
+                $_SESSION['mostrar_loading'] = true;
 
                 header("Location: index.php?action=dashboard");
                 exit();
