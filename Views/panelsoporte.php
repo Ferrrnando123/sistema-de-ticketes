@@ -13,23 +13,23 @@
 
     <main class="max-w-7xl mx-auto mt-12 px-6 pb-20">
         
-        <div class="mb-10">
+        <div class="mb-10 animate-fadeInUp">
             <h1 class="text-3xl font-black text-slate-800 tracking-tight">Panel de Control</h1>
             <p class="text-slate-500 mt-2 text-lg">Gestión global de todas las incidencias del sistema.</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 animate-fadeInUp delay-1 hover-lift">
                 <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Pendientes</p>
                 <p class="text-3xl font-black text-slate-800"><?= $stats['pendientes'] ?> Casos</p>
             </div>
             
-            <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 animate-fadeInUp delay-2 hover-lift">
                 <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Críticos</p>
                 <p class="text-3xl font-black text-red-600"><?= $stats['criticos'] ?> Tickets</p>
             </div>
             
-            <div class="bg-emerald-500 p-8 rounded-3xl shadow-lg shadow-emerald-200 text-white">
+            <div class="bg-emerald-500 p-8 rounded-3xl shadow-lg shadow-emerald-200 text-white animate-fadeInUp delay-3 hover-lift">
                 <p class="text-emerald-100 text-xs font-bold uppercase tracking-widest mb-1">Resueltos Hoy</p>
                 <p class="text-3xl font-black"><?= $stats['resueltos_hoy'] ?> Éxitos</p>
             </div>
@@ -71,7 +71,7 @@
                                     <?php 
                                         $pColor = ($t['prioridad'] == 'alta') ? 'red' : (($t['prioridad'] == 'media') ? 'blue' : 'emerald');
                                     ?>
-                                    <span class="px-3 py-1 rounded text-[10px] font-bold uppercase bg-<?= $pColor ?>-50 text-<?= $pColor ?>-600 border border-<?= $pColor ?>-100"><?= $t['prioridad'] ?></span>
+                                    <span class="px-3 py-1 rounded text-[10px] font-bold uppercase bg-<?= $pColor ?>-50 text-<?= $pColor ?>-600 border border-<?= $pColor ?>-100 <?= $t['prioridad'] == 'alta' ? 'animate-pulse-red' : '' ?>"><?= $t['prioridad'] ?></span>
                                 </td>
                                 <td class="px-8 py-6 text-center">
                                     <?php 
