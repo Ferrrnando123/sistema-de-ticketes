@@ -111,9 +111,6 @@
                 <div class="input-group">
                     <label for="password">Clave</label>
                     <input type="password" id="password" name="password" required>
-                    <div class="form-footer">
-                        <a href="#" class="link">¿Olvidó su clave?</a>
-                    </div>
                 </div>
 
                 <button type="submit" class="btn-primary">Iniciar sesión</button>
