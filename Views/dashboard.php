@@ -14,7 +14,7 @@
     <main class="max-w-4xl mx-auto mt-12 px-6 pb-20">
         
         <div class="text-center mb-10">
-            <h1 class="text-4xl font-black text-slate-800 tracking-tight">Bienvenido al Campus IT</h1>
+            <h1 class="text-4xl font-black text-slate-800 tracking-tight">Bienvenido</h1>
             <p class="text-slate-500 mt-2 text-lg">¿En qué podemos ayudarte hoy?</p>
         </div>
 
