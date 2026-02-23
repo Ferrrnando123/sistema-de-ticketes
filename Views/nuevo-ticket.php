@@ -10,50 +10,26 @@
 <body class="bg-[#f8fafc] font-sans text-slate-900">
 
 
-    <nav class="bg-[#1e293b] text-white shadow-lg px-8 py-3">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center">
-                <span class="text-xl font-bold tracking-tight uppercase border-l-4 border-cyan-400 pl-3">TicketSystem</span>
-            </div>
-
-            <div class="hidden md:flex space-x-8 items-center text-sm">
-                <a href="index.php?action=dashboard" class="transition pb-1 <?php echo ($_GET['action'] == 'dashboard') ? 'text-cyan-400 font-semibold border-b-2 border-cyan-400' : 'text-slate-400 hover:text-white'; ?>">
-                    Inicio
-                </a>
-                
-                <a href="index.php?action=nuevo-ticket" class="transition pb-1 flex items-center gap-2 <?php echo ($_GET['action'] == 'nuevo-ticket') ? 'text-cyan-400 font-semibold border-b-2 border-cyan-400' : 'text-slate-400 hover:text-white'; ?>">
-                    <i class="fas fa-plus-circle text-xs"></i>
-                    Nuevo Ticket
-                </a>
-
-                <a href="index.php?action=mis-tickets" class="transition pb-1 <?php echo ($_GET['action'] == 'mis-tickets') ? 'text-cyan-400 font-semibold border-b-2 border-cyan-400' : 'text-slate-400 hover:text-white'; ?>">
-                    Mis Tickets
-                </a>
-                
-                <a href="#" class="text-slate-400 hover:text-white transition pb-1">Ayuda</a>
-            </div>
-
-            <div class="flex items-center space-x-3">
-                <div class="flex items-center space-x-3 bg-slate-800 px-4 py-1.5 rounded-full border border-slate-700">
-                    <div class="text-right hidden sm:block">
-                        <p class="text-[10px] text-slate-500 uppercase font-bold leading-none">Sesión actual</p>
-                        <p class="text-xs font-medium text-slate-200"><?php echo $_SESSION['nombre'] ?? 'Usuario'; ?></p>
-                    </div>
-                    <div class="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center border border-slate-500">
-                        <i class="fas fa-user-secret text-xs text-slate-300"></i>
-                    </div>
-                </div>
-                <a href="index.php?action=logout" class="text-slate-400 hover:text-red-400 transition p-2">
-                    <i class="fas fa-power-off text-sm"></i>
-                </a>
-            </div>
-        </div>
-    </nav>
+    <?php include 'Views/partials/navbar.php'; ?>
 
     <main class="max-w-3xl mx-auto mt-10 px-6 pb-20">
         <div class="mb-8">
             <h1 class="text-3xl font-black text-slate-800 tracking-tight">Reportar Incidencia en Campus</h1>
             <p class="text-slate-500 mt-2">Selecciona el área específica (Salones o Baños) para reportar el inconveniente.</p>
+
+            <?php if(isset($_GET['success'])): ?>
+                <div class="mt-4 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl flex items-center gap-3 animate-bounce">
+                    <i class="fas fa-check-circle"></i>
+                    <span class="text-sm font-bold">¡Incidencia reportada con éxito! La revisaremos pronto.</span>
+                </div>
+            <?php endif; ?>
+
+            <?php if(isset($_GET['error'])): ?>
+                <div class="mt-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center gap-3">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span class="text-sm font-bold">Error al enviar el reporte. Por favor intenta de nuevo.</span>
+                </div>
+            <?php endif; ?>
         </div>
 
         <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden">

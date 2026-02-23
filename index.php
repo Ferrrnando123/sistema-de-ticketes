@@ -1,50 +1,65 @@
 <?php
 // index.php
-require_once 'config/db.php'; 
+require_once 'Config/supabase.php'; 
 session_start();
 
 $action = $_GET['action'] ?? 'login';
 
 switch ($action) {
     case 'login':
-        require 'views/login.php';
+        require 'Views/login.php';
         break;
 
     case 'procesar_login':
-        require 'controllers/AuthController.php';
-        $auth = new AuthController($pdo);
+        require 'Controllers/AuthController.php';
+        $auth = new AuthController();
         $auth->procesarLogin();
-        break;
-
-    case 'registro':
-        require 'views/registro.php';
-        break;
-
-    case 'guardar_registro':
-        require 'controllers/AuthController.php';
-        $auth = new AuthController($pdo);
-        $auth->guardarRegistro();
         break;
 
     case 'dashboard':
         validarSesion();
-        require 'views/dashboard.php';
+        require 'Views/dashboard.php';
         break;
 
     case 'nuevo-ticket':
         validarSesion();
-        require 'views/nuevo-ticket.php';
+        require 'Views/nuevo-ticket.php';
+        break;
+
+    case 'guardar_ticket':
+        validarSesion();
+        require 'Controllers/TicketController.php';
+        $tickets = new TicketController();
+        $tickets->guardar();
         break;
 
     case 'mis-tickets':
         validarSesion();
-        require 'views/mis-tickets.php';
+        require 'Controllers/TicketController.php';
+        $tickets = new TicketController();
+        $tickets->misTickets();
         break;
 
-    // ESTA ES LA RUTA QUE FALTABA PARA EL NAV
     case 'panel-soporte':
         validarSesion();
-        require 'views/panelsoporte.php'; 
+        if ($_SESSION['rol'] !== 'admin') {
+            header("Location: index.php?action=dashboard");
+            exit();
+        }
+        require 'Controllers/TicketController.php';
+        $tickets = new TicketController();
+        $tickets->panelSoporte();
+        break;
+
+    case 'actualizar_estado':
+        validarSesion();
+        if ($_SESSION['rol'] !== 'admin') {
+            header("Location: index.php?action=dashboard");
+            exit();
+        }
+        require 'Controllers/TicketController.php';
+        $tickets = new TicketController();
+        $tickets->actualizarEstado();
         break;
 
     case 'logout':
