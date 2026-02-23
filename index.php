@@ -61,6 +61,11 @@ switch ($action) {
         $tickets = new TicketController();
         $tickets->actualizarEstado();
         break;
+    
+    case 'ayuda':
+        validarSesion();
+        require 'Views/ayuda.php';
+        break;
 
     case 'logout':
         session_destroy();

@@ -70,7 +70,7 @@ $isAdmin = isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin';
                 </a>
             <?php endif; ?>
             
-            <a href="#" class="text-slate-400 hover:text-white transition pb-1">Ayuda</a>
+            <a href="index.php?action=ayuda" class="transition pb-1 <?= $current_action == 'ayuda' ? 'text-cyan-400 font-semibold border-b-2 border-cyan-400' : 'text-slate-400 hover:text-white' ?>">Ayuda</a>
         </div>
 
         <div class="flex items-center space-x-3">
