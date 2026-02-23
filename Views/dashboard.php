@@ -9,38 +9,7 @@
 </head>
 <body class="bg-[#f8fafc] font-sans text-slate-900">
 
-    <nav class="bg-[#1e293b] text-white shadow-lg px-8 py-3">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center">
-                <span class="text-xl font-bold tracking-tight uppercase border-l-4 border-cyan-400 pl-3">TicketSystem</span>
-            </div>
-
-            <div class="hidden md:flex space-x-8 items-center text-sm">
-                <a href="index.php?action=dashboard" class="text-cyan-400 font-semibold border-b-2 border-cyan-400 pb-1">Inicio</a>
-                
-                <a href="index.php?action=nuevo-ticket" class="text-slate-400 hover:text-white transition flex items-center gap-2">
-                    <i class="fas fa-plus-circle text-cyan-400 text-xs"></i>
-                    Nuevo Ticket
-                </a>
-
-                <a href="index.php?action=mis-tickets" class="text-slate-400 hover:text-white transition">Mis Tickets</a>
-                <a href="#" class="text-slate-400 hover:text-white transition">Ayuda</a>
-            </div>
-
-            <div class="flex items-center space-x-3 bg-slate-800 px-4 py-1.5 rounded-full border border-slate-700">
-                <div class="text-right">
-                    <p class="text-[10px] text-slate-500 uppercase font-bold leading-none">Sesión actual</p>
-                    <p class="text-xs font-medium text-slate-200"><?php echo $_SESSION['nombre'] ?? 'Usuario'; ?></p>
-                </div>
-                <div class="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center border border-slate-500">
-                    <i class="fas fa-user-secret text-xs text-slate-300"></i>
-                </div>
-                <a href="index.php?action=logout" class="text-slate-400 hover:text-red-400 ml-2 transition">
-                    <i class="fas fa-power-off text-xs"></i>
-                </a>
-            </div>
-        </div>
-    </nav>
+    <?php include 'Views/partials/navbar.php'; ?>
 
     <main class="max-w-4xl mx-auto mt-12 px-6 pb-20">
         

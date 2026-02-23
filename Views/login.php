@@ -20,8 +20,8 @@
 
             <form action="index.php?action=procesar_login" method="POST">
                 <div class="input-group">
-                    <label for="usuario">Dirección de email o usuario</label>
-                    <input type="text" id="usuario" name="usuario" required placeholder="ejemplo@udb.edu.sv">
+                    <label for="usuario">Correo Institucional</label>
+                    <input type="email" id="usuario" name="usuario" required placeholder="usuario@udb.edu.sv">
                 </div>
 
                 <div class="input-group">
@@ -35,7 +35,7 @@
                 <button type="submit" class="btn-primary">Iniciar sesión</button>
             </form>
 
-            <p class="footer-text">¿No tiene una cuenta? <a href="index.php?action=registro" class="link">Regístrese</a></p>
+            <p class="footer-text">Acceso exclusivo para personal y alumnos UDB</p>
         </div>
     </div>
 </body>
