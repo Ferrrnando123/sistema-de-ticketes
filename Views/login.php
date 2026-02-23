@@ -108,6 +108,7 @@
                     <input type="email" id="usuario" name="usuario" required placeholder="usuario@udb.edu.sv">
                 </div>
 
+                <!-- aqui realizamos el campo de clave (hemos quitado el boton de olvidar clave) -->
                 <div class="input-group">
                     <label for="password">Clave</label>
                     <input type="password" id="password" name="password" required>

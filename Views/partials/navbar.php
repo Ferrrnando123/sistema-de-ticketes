@@ -101,7 +101,7 @@ $isAdmin = isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin';
         </div>
     </div>
 
-    <!-- aqui realizamos el menu desplegable para dispositivos moviles -->
+    <!-- aqui realizamos el menu desplegable para dispositivos moviles (hamburguesa) -->
     <div id="mobile-menu" class="hidden md:hidden mt-4 pt-4 border-t border-slate-700 space-y-4 pb-2">
         <a href="index.php?action=dashboard" class="block text-sm <?= $current_action == 'dashboard' ? 'text-cyan-400 font-bold' : 'text-slate-400' ?>">Inicio</a>
         <a href="index.php?action=nuevo-ticket" class="block text-sm <?= $current_action == 'nuevo-ticket' ? 'text-cyan-400 font-bold' : 'text-slate-400' ?>">Nuevo Ticket</a>
@@ -113,10 +113,11 @@ $isAdmin = isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin';
     </div>
 </nav>
 
-<!-- esta es la funcion para alternar la visibilidad del menu movil -->
+<!-- esta es la funcion para alternar la visibilidad del menu movil al hacer click -->
 <script>
     document.getElementById('mobile-menu-button').addEventListener('click', function() {
         const menu = document.getElementById('mobile-menu');
+        // aqui realizamos el cambio de clase para mostrar/ocultar
         menu.classList.toggle('hidden');
     });
 </script>

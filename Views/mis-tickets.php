@@ -34,6 +34,7 @@
                             <th class="px-8 py-5 text-[11px] font-black text-slate-400 uppercase tracking-widest text-center">Prioridad</th>
                             <th class="px-8 py-5 text-[11px] font-black text-slate-400 uppercase tracking-widest text-center">Estado</th>
                             <th class="px-8 py-5 text-[11px] font-black text-slate-400 uppercase tracking-widest">Fecha</th>
+                            <!-- aqui hemos quitado la columna de detalles por peticion del usuario -->
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-50">

@@ -48,25 +48,43 @@
         opacity: 0;
         visibility: hidden;
     }
+
+    /* aqui hacemos el cambio para que el loader empiece oculto por defecto */
+    .loader-initial-state {
+        display: none !important;
+    }
 </style>
 
 <!-- aqui realizamos la estructura visual del spinner -->
-<div id="loader-wrapper">
+<div id="loader-wrapper" class="loader-initial-state">
     <div class="loader-content">
         <div class="spinner"></div>
         <p class="loader-text">TicketSystem</p>
     </div>
 </div>
 
-<!-- esta es la funcion para ocultar el loader despues de un tiempo -->
+<!-- esta es la funcion para ocultar el loader despues de un tiempo y detectar refresco -->
 <script>
-    window.addEventListener('load', function() {
+    (function() {
         const loader = document.getElementById('loader-wrapper');
-        // El usuario pidió que dure milisegundos
-        setTimeout(function() {
-            if (loader) {
-                loader.classList.add('loader-hidden');
-            }
-        }, 800); // 800ms de duración
-    });
+        // aqui hacemos el cambio para detectar si fue un refresco manual
+        const navEntries = performance.getEntriesByType('navigation');
+        const isReload = navEntries.length > 0 && navEntries[0].type === 'reload';
+
+        if (isReload) {
+            // Si es un refresco, mostramos el loader quitando la clase de ocultado inicial
+            loader.classList.remove('loader-initial-state');
+            
+            window.addEventListener('load', function() {
+                setTimeout(function() {
+                    if (loader) {
+                        loader.classList.add('loader-hidden');
+                    }
+                }, 800); // 800ms de duración
+            });
+        } else {
+            // Si es navegacion normal, nos aseguramos que este oculto totalmente
+            loader.style.display = 'none';
+        }
+    })();
 </script>
