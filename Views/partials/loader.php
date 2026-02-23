@@ -1,8 +1,6 @@
 <?php
 // Views/partials/loader.php
-// aqui realizamos la comprobacion de si se debe mostrar el loader
-if (isset($_SESSION['mostrar_loading']) && $_SESSION['mostrar_loading'] === true):
-    unset($_SESSION['mostrar_loading']);
+// aqui hemos quitado el filtro de sesion para que cargue siempre
 ?>
 <style>
     #loader-wrapper {
@@ -72,4 +70,3 @@ if (isset($_SESSION['mostrar_loading']) && $_SESSION['mostrar_loading'] === true
         }, 800); // 800ms de duración
     });
 </script>
-<?php endif; ?>
