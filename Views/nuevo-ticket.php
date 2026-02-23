@@ -13,7 +13,7 @@
     <?php include 'Views/partials/navbar.php'; ?>
 
     <main class="max-w-3xl mx-auto mt-10 px-6 pb-20">
-        <div class="mb-8">
+        <div class="mb-8 animate-fadeInUp">
             <h1 class="text-3xl font-black text-slate-800 tracking-tight">Reportar Incidencia en Campus</h1>
             <p class="text-slate-500 mt-2">Selecciona el área específica (Salones o Sanitarios) para reportar el inconveniente.</p>
 
@@ -32,7 +32,7 @@
             <?php endif; ?>
         </div>
 
-        <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden">
+        <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden animate-fadeInUp delay-1">
             <form id="ticketForm" action="index.php?action=guardar_ticket" method="POST" class="p-8 space-y-6">
                 
                 <div>
