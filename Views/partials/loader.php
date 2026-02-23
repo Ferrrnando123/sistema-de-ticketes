@@ -60,7 +60,7 @@ if (isset($_SESSION['mostrar_loading']) && $_SESSION['mostrar_loading'] === true
     </div>
 </div>
 
-// esta es la funcion para ocultar el loader despues de un tiempo
+<!-- esta es la funcion para ocultar el loader despues de un tiempo -->
 <script>
     window.addEventListener('load', function() {
         const loader = document.getElementById('loader-wrapper');
