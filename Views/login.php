@@ -92,7 +92,7 @@
     <div class="login-container">
         <div class="login-box">
             <!-- aqui realizamos el titulo principal del sistema -->
-            <h1 class="title">Sistema tickets Tickets</h1>
+            <h1 class="title">Sistema Tickets</h1>
             <p class="subtitle">Gestión de Infraestructura UDB</p>
             
             <?php if(isset($_GET['registrado'])): ?>
