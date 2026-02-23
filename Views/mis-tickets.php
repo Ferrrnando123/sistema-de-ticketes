@@ -48,7 +48,7 @@
                                     <td class="px-8 py-6">
                                         <div class="flex flex-col">
                                             <span class="text-slate-800 font-bold group-hover:text-cyan-600 transition-colors"><?= htmlspecialchars($t['asunto']) ?></span>
-                                            <span class="text-xs text-slate-400 mt-1 flex items-center gap-1"><i class="fas fa-map-marker-alt"></i> <?= htmlspecialchars($t['ubicacion']) ?></span>
+                                            <span class="text-xs text-slate-400 mt-1 flex items-center gap-1"><i class="fas fa-map-marker-alt"></i> <?= ucwords(str_replace('_', ' de ', $t['ubicacion'])) ?></span>
                                         </div>
                                     </td>
                                     <td class="px-8 py-6 text-center">
@@ -93,7 +93,7 @@
                 <div>
                     <h4 class="text-blue-800 font-bold text-sm uppercase tracking-wider mb-1">¿Necesitas actualizar información?</h4>
                     <p class="text-blue-700 text-sm leading-relaxed">
-                        Si necesitas añadir detalles a un ticket existente, por favor <strong>responde al correo de confirmación</strong> que recibiste o contacta directamente con nuestro equipo de soporte indicando el <strong>número de ticket</strong> correspondiente.
+                        Si necesitas añadir detalles extras un ticket existente, por favor manda la peticion a aguilamedez34@gmail.com directamente con nuestro equipo de soporte indicando el número de ticket correspondiente.
                     </p>
                 </div>
             </div>

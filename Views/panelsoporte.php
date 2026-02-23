@@ -64,7 +64,7 @@
                                 <td class="px-8 py-6">
                                     <div class="flex flex-col">
                                         <span class="text-slate-700 font-medium text-sm"><?= htmlspecialchars($t['asunto']) ?></span>
-                                        <span class="text-[10px] text-cyan-500 font-bold uppercase mt-1"><?= htmlspecialchars($t['ubicacion']) ?></span>
+                                        <span class="text-[10px] text-cyan-500 font-bold uppercase mt-1"><?= str_replace('_', ' DE ', strtoupper($t['ubicacion'])) ?></span>
                                     </div>
                                 </td>
                                 <td class="px-8 py-6 text-center">
