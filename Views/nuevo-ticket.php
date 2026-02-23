@@ -15,7 +15,7 @@
     <main class="max-w-3xl mx-auto mt-10 px-6 pb-20">
         <div class="mb-8">
             <h1 class="text-3xl font-black text-slate-800 tracking-tight">Reportar Incidencia en Campus</h1>
-            <p class="text-slate-500 mt-2">Selecciona el área específica (Salones o Baños) para reportar el inconveniente.</p>
+            <p class="text-slate-500 mt-2">Selecciona el área específica (Salones o Sanitarios) para reportar el inconveniente.</p>
 
             <?php if(isset($_GET['success'])): ?>
                 <div class="mt-4 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl flex items-center gap-3 animate-bounce">
@@ -53,8 +53,8 @@
                                     <option value="tic2">Salón TIC-2</option>
                                 </optgroup>
                                 <optgroup label="Servicios Sanitarios">
-                                    <option value="bano_hombres">Baño de Hombres</option>
-                                    <option value="bano_mujeres">Baño de Mujeres</option>
+                                    <option value="sanitario_hombres">Sanitario de Hombres</option>
+                                    <option value="sanitario_mujeres">Sanitario de Mujeres</option>
                                 </optgroup>
                             </select>
                             <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
