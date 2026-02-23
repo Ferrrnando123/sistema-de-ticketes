@@ -5,21 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Tickets - Sistema de Soporte</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322d3ee'><path d='M2 8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2a2 2 0 1 0 0 4v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2a2 2 0 1 0 0-4V8z'/></svg>">
+    <!-- aqui realizamos la carga del loader condicional -->
     <?php include 'Views/partials/loader.php'; ?>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-[#f8fafc] font-sans text-slate-900">
 
+    <!-- aqui realizamos la carga de la navegacion superior -->
     <?php include 'Views/partials/navbar.php'; ?>
 
     <main class="max-w-7xl mx-auto mt-12 px-6 pb-20">
         
+        <!-- aqui realizamos el titulo y descripcion del historial -->
         <div class="mb-10">
             <h1 class="text-3xl font-black text-slate-800 tracking-tight">Historial de Tickets</h1>
             <p class="text-slate-500 mt-2 text-lg">Consulta el seguimiento y las resoluciones de tus casos.</p>
         </div>
 
+        <!-- aqui realizamos el listado de tickets en una tabla -->
         <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden mb-8">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
@@ -30,10 +34,10 @@
                             <th class="px-8 py-5 text-[11px] font-black text-slate-400 uppercase tracking-widest text-center">Prioridad</th>
                             <th class="px-8 py-5 text-[11px] font-black text-slate-400 uppercase tracking-widest text-center">Estado</th>
                             <th class="px-8 py-5 text-[11px] font-black text-slate-400 uppercase tracking-widest">Fecha</th>
-                            <th class="px-8 py-5 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right">Detalles</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-50">
+                        <!-- aqui realizamos la comprobacion de si hay tickets para mostrar -->
                         <?php if (empty($tickets)): ?>
                             <tr>
                                 <td colspan="6" class="px-8 py-10 text-center text-slate-400">
@@ -42,6 +46,7 @@
                                 </td>
                             </tr>
                         <?php else: ?>
+                            <!-- aqui realizamos el recorrido de cada ticket encontrado -->
                             <?php foreach ($tickets as $t): ?>
                                 <tr class="hover:bg-slate-50/80 transition-all duration-200 group">
                                     <td class="px-8 py-6">
@@ -54,12 +59,14 @@
                                         </div>
                                     </td>
                                     <td class="px-8 py-6 text-center">
+                                        <!-- aqui hacemos el cambio de color segun la prioridad del caso -->
                                         <?php 
                                             $pColor = ($t['prioridad'] == 'alta') ? 'red' : (($t['prioridad'] == 'media') ? 'blue' : 'emerald');
                                         ?>
                                         <span class="px-3 py-1 rounded text-[10px] font-bold uppercase bg-<?= $pColor ?>-50 text-<?= $pColor ?>-600 border border-<?= $pColor ?>-100"><?= $t['prioridad'] ?></span>
                                     </td>
                                     <td class="px-8 py-6 text-center">
+                                        <!-- aqui realizamos el cambio de etiquetas segun el estado actual -->
                                         <?php 
                                             $eColor = ($t['estado'] == 'resuelto') ? 'emerald' : (($t['estado'] == 'en_proceso') ? 'amber' : 'slate');
                                             $eLabel = ($t['estado'] == 'resuelto') ? 'Finalizado' : (($t['estado'] == 'en_proceso') ? 'En proceso' : 'Abierto');
@@ -73,11 +80,6 @@
                                     </td>
                                     <td class="px-8 py-6 text-sm text-slate-500 font-medium">
                                         <?= date('d M Y', strtotime($t['created_at'])) ?>
-                                    </td>
-                                    <td class="px-8 py-6 text-right">
-                                        <button class="h-9 w-9 inline-flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-cyan-600 hover:border-cyan-200 hover:shadow-sm transition-all" title="Ver descripción">
-                                            <i class="fas fa-search-plus text-xs"></i>
-                                        </button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

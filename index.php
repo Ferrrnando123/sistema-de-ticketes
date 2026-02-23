@@ -5,6 +5,7 @@ session_start();
 
 $action = $_GET['action'] ?? 'login';
 
+// aqui realizamos el filtrado de rutas por acciones
 switch ($action) {
     case 'login':
         require 'Views/login.php';
@@ -62,6 +63,7 @@ switch ($action) {
         $tickets->actualizarEstado();
         break;
     
+    // aqui hacemos el cambio para mostrar la pantalla de ayuda
     case 'ayuda':
         validarSesion();
         require 'Views/ayuda.php';
@@ -80,6 +82,7 @@ switch ($action) {
 }
 
 // Función auxiliar para no repetir código en cada caso
+// esta es la funcion para validar que el usuario tenga sesión activa
 function validarSesion() {
     if (!isset($_SESSION['id'])) {
         header("Location: index.php?action=login");

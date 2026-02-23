@@ -2,6 +2,7 @@
 // Controllers/TicketController.php
 
 class TicketController {
+    // esta es la funcion para registrar un nuevo ticket
     public function guardar() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = [
@@ -14,6 +15,7 @@ class TicketController {
                 'estado' => 'abierto'
             ];
 
+            // aqui conectamos con la base de datos para insertar el ticket
             $response = Supabase::request('/rest/v1/tickets', 'POST', $data, $_SESSION['access_token']);
 
             if ($response['status'] == 201) {
@@ -26,14 +28,17 @@ class TicketController {
         }
     }
 
+    // esta es la funcion para listar los tickets que ha enviado el usuario
     public function misTickets() {
         $userId = $_SESSION['id'];
+        // aqui realizamos la consulta filtrada por id de usuario
         $response = Supabase::request("/rest/v1/tickets?user_id=eq.$userId&order=created_at.desc", 'GET', null, $_SESSION['access_token']);
         
         $tickets = ($response['status'] == 200) ? $response['data'] : [];
         require 'Views/mis-tickets.php';
     }
 
+    // esta es la funcion para cargar las estadisticas y panel de administrador
     public function panelSoporte() {
         $token = $_SESSION['access_token'];
         $hoy = date('Y-m-d');
@@ -70,6 +75,7 @@ class TicketController {
         require 'Views/panelsoporte.php';
     }
 
+    // esta es la funcion para cambiar el estado de un ticket (Admin)
     public function actualizarEstado() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id']) && isset($_POST['estado'])) {
             $id = $_POST['id'];

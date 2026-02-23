@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Campus IT Tickets - UDB</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322d3ee'><path d='M2 8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2a2 2 0 1 0 0 4v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2a2 2 0 1 0 0-4V8z'/></svg>">
+    <!-- aqui realizamos la carga del loader condicional -->
     <?php include 'Views/partials/loader.php'; ?>
     <style>
         /* CSS Integrado para que el hosting no moleste */
@@ -90,6 +91,7 @@
 <body class="login-body">
     <div class="login-container">
         <div class="login-box">
+            <!-- aqui realizamos el titulo principal del sistema -->
             <h1 class="title">Campus IT Tickets</h1>
             <p class="subtitle">Gestión de Infraestructura UDB</p>
             
@@ -99,6 +101,7 @@
                 </p>
             <?php endif; ?>
 
+            <!-- aqui realizamos el inicio de sesión enviando al controlador -->
             <form action="index.php?action=procesar_login" method="POST">
                 <div class="input-group">
                     <label for="usuario">Correo Institucional</label>
