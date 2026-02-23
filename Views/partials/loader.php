@@ -1,5 +1,6 @@
 <?php
 // Views/partials/loader.php
+// aqui realizamos la comprobacion de si se debe mostrar el loader
 if (isset($_SESSION['mostrar_loading']) && $_SESSION['mostrar_loading'] === true):
     unset($_SESSION['mostrar_loading']);
 ?>
@@ -51,6 +52,7 @@ if (isset($_SESSION['mostrar_loading']) && $_SESSION['mostrar_loading'] === true
     }
 </style>
 
+<!-- aqui realizamos la estructura visual del spinner -->
 <div id="loader-wrapper">
     <div class="loader-content">
         <div class="spinner"></div>
@@ -58,6 +60,7 @@ if (isset($_SESSION['mostrar_loading']) && $_SESSION['mostrar_loading'] === true
     </div>
 </div>
 
+// esta es la funcion para ocultar el loader despues de un tiempo
 <script>
     window.addEventListener('load', function() {
         const loader = document.getElementById('loader-wrapper');

@@ -5,16 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - TicketSystem</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322d3ee'><path d='M2 8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2a2 2 0 1 0 0 4v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2a2 2 0 1 0 0-4V8z'/></svg>">
+    <!-- aqui hacemos el cambio para el loader condicional -->
     <?php include 'Views/partials/loader.php'; ?>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-[#f8fafc] font-sans text-slate-900">
 
+    <!-- aqui realizamos la carga de la navegacion -->
     <?php include 'Views/partials/navbar.php'; ?>
 
     <main class="max-w-4xl mx-auto mt-12 px-6 pb-20">
         
+        <!-- aqui realizamos el encabezado de bienvenida para el usuario -->
         <div class="text-center mb-10 animate-fadeInUp">
             <h1 class="text-4xl font-black text-slate-800 tracking-tight">Bienvenido</h1>
             <p class="text-slate-500 mt-2 text-lg">¿En qué podemos ayudarte hoy?</p>
@@ -22,6 +25,7 @@
 
 
         <div class="grid gap-4">
+            <!-- aqui realizamos la primera tarjeta de informacion sobre tickets -->
             <div class="bg-white border border-slate-100 rounded-2xl p-6 flex items-start gap-5 shadow-sm hover-lift animate-fadeInUp delay-1">
                 <div class="bg-cyan-50 text-cyan-500 p-3 rounded-xl">
                     <i class="fas fa-info-circle text-xl"></i>
@@ -46,6 +50,7 @@
                 </div>
             </div>
 
+            <!-- aqui realizamos la tarjeta de seguimiento indicando las secciones clave -->
             <div class="bg-white border border-slate-100 rounded-2xl p-6 flex items-start gap-5 shadow-sm hover-lift animate-fadeInUp delay-3">
                 <div class="bg-blue-50 text-blue-500 p-3 rounded-xl">
                     <i class="fas fa-location-arrow text-xl"></i>

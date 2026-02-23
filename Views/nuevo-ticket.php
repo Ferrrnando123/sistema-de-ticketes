@@ -12,6 +12,7 @@
 <body class="bg-[#f8fafc] font-sans text-slate-900">
 
 
+    <!-- aqui hacemos el cambio para cargar componentes globales -->
     <?php include 'Views/partials/navbar.php'; ?>
 
     <main class="max-w-3xl mx-auto mt-10 px-6 pb-20">
@@ -19,6 +20,7 @@
             <h1 class="text-3xl font-black text-slate-800 tracking-tight">Reportar Incidencia en Campus</h1>
             <p class="text-slate-500 mt-2">Selecciona el área específica (Salones o Sanitarios) para reportar el inconveniente.</p>
 
+            <!-- aqui realizamos la notificacion de mensaje exitoso si existe -->
             <?php if(isset($_GET['success'])): ?>
                 <div class="mt-4 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl flex items-center gap-3 animate-bounce">
                     <i class="fas fa-check-circle"></i>
@@ -35,6 +37,7 @@
         </div>
 
         <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden animate-fadeInUp delay-1">
+            <!-- aqui realizamos el reporte de la incidencia mediante el formulario -->
             <form id="ticketForm" action="index.php?action=guardar_ticket" method="POST" class="p-8 space-y-6">
                 
                 <div>
@@ -44,6 +47,7 @@
                 </div>
 
                 <div class="grid md:grid-cols-2 gap-6">
+                    <!-- aqui realizamos el selector de ubicaciones segun las areas de la UDB -->
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide">Área afectada</label>
                         <div class="relative">
@@ -63,6 +67,7 @@
                         </div>
                     </div>
 
+                    <!-- aqui realizamos el cambio de prioridad visual mediante botones radio -->
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide">Prioridad del reporte</label>
                         <div class="flex gap-2">
@@ -107,6 +112,7 @@
         </div>
     </main>
 
+    <!-- esta es la funcion para controlar el feedback del boton de enviar -->
     <script>
         document.getElementById('ticketForm').addEventListener('submit', function() {
             const btn = document.getElementById('submitBtn');

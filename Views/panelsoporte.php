@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Soporte - TicketSystem</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322d3ee'><path d='M2 8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2a2 2 0 1 0 0 4v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2a2 2 0 1 0 0-4V8z'/></svg>">
+    <!-- aqui realizamos la carga del loader condicional -->
     <?php include 'Views/partials/loader.php'; ?>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -20,7 +21,9 @@
             <p class="text-slate-500 mt-2 text-lg">Gestión global de todas las incidencias del sistema.</p>
         </div>
 
+        <!-- aqui realizamos el resumen de estadisticas globales -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <!-- aqui realizamos la tarjeta de conteo para los casos pendientes -->
             <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 animate-fadeInUp delay-1 hover-lift">
                 <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Pendientes</p>
                 <p class="text-3xl font-black text-slate-800"><?= $stats['pendientes'] ?> Casos</p>
@@ -54,6 +57,7 @@
                             <tr class="hover:bg-slate-50/80 transition-all duration-200 group">
                                 <td class="px-8 py-6">
                                     <div class="flex items-center gap-3">
+                                        <!-- aqui realizamos la identificacion visual del usuario con sus iniciales -->
                                         <div class="w-9 h-9 bg-cyan-100 text-cyan-600 rounded-xl flex items-center justify-center font-bold text-xs">
                                             <?= strtoupper(substr($t['email'], 0, 2)) ?>
                                         </div>
@@ -82,6 +86,8 @@
                                     <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-<?= $eColor ?>-50 text-<?= $eColor ?>-600 border border-<?= $eColor ?>-200"><?= str_replace('_', ' ', $t['estado']) ?></span>
                                 </td>
                                 <td class="px-8 py-6 text-right">
+                                    <!-- aqui realizamos el cambio de estado del ticket desde el panel -->
+                                    <!-- aqui realizamos el cambio de estado mediante un selector automatico -->
                                     <form action="index.php?action=actualizar_estado" method="POST" class="flex items-center justify-end gap-2">
                                         <input type="hidden" name="id" value="<?= $t['id'] ?>">
                                         <select name="estado" onchange="this.form.submit()" class="bg-slate-50 border border-slate-200 rounded-lg text-[10px] font-bold p-1 outline-none cursor-pointer">

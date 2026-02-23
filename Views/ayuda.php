@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Centro de Ayuda - TicketSystem</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322d3ee'><path d='M2 8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2a2 2 0 1 0 0 4v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2a2 2 0 1 0 0-4V8z'/></svg>">
+    <!-- aqui hacemos el cambio para cargar el loader -->
     <?php include 'Views/partials/loader.php'; ?>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-[#f8fafc] font-sans text-slate-900">
 
+    <!-- aqui realizamos la carga de la barra de navegacion -->
     <?php include 'Views/partials/navbar.php'; ?>
 
     <main class="max-w-5xl mx-auto mt-12 px-6 pb-20">
@@ -22,6 +24,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             
+            <!-- aqui realizamos el bloque informativo para nuevos usuarios -->
             <div class="bg-white border border-slate-100 rounded-3xl p-8 shadow-sm hover-lift animate-fadeInUp delay-1">
                 <div class="bg-cyan-50 text-cyan-500 w-12 h-12 rounded-2xl flex items-center justify-center mb-6">
                     <i class="fas fa-rocket text-xl"></i>
@@ -43,6 +46,7 @@
                 </ul>
             </div>
 
+            <!-- aqui realizamos el glosario de prioridades para conocimiento del usuario -->
             <div class="bg-white border border-slate-100 rounded-3xl p-8 shadow-sm hover-lift animate-fadeInUp delay-2">
                 <div class="bg-red-50 text-red-500 w-12 h-12 rounded-2xl flex items-center justify-center mb-6">
                     <i class="fas fa-layer-group text-xl"></i>
