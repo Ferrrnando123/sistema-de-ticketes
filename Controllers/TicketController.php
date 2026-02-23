@@ -49,7 +49,7 @@ class TicketController {
         $hoy = date('Y-m-d');
         foreach ($tickets as $t) {
             if ($t['estado'] != 'resuelto') $stats['pendientes']++;
-            if ($t['prioridad'] == 'alta') $stats['criticos']++;
+            if ($t['prioridad'] == 'alta' && $t['estado'] != 'resuelto') $stats['criticos']++;
             if ($t['estado'] == 'resuelto' && strpos($t['updated_at'], $hoy) !== false) {
                 $stats['resueltos_hoy']++;
             }
