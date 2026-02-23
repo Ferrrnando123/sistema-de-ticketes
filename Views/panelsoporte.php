@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Soporte - TicketSystem</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-[#f8fafc] font-sans text-slate-900">
 
@@ -17,16 +16,9 @@
 
             <div class="hidden md:flex space-x-8 items-center text-sm">
                 <a href="index.php?action=dashboard" class="text-slate-400 hover:text-white transition">Inicio</a>
-                
-                <a href="index.php?action=nuevo-ticket" class="text-slate-400 hover:text-white transition flex items-center gap-2">
-                    <i class="fas fa-plus-circle text-cyan-400 text-xs"></i>
-                    Nuevo Ticket
-                </a>
-
+                <a href="index.php?action=nuevo-ticket" class="text-slate-400 hover:text-white transition">Nuevo Ticket</a>
                 <a href="index.php?action=mis-tickets" class="text-slate-400 hover:text-white transition">Mis Tickets</a>
-                
                 <a href="index.php?action=panel-soporte" class="text-cyan-400 font-semibold border-b-2 border-cyan-400 pb-1">Panel Soporte</a>
-                
                 <a href="#" class="text-slate-400 hover:text-white transition">Ayuda</a>
             </div>
 
@@ -36,10 +28,10 @@
                     <p class="text-xs font-medium text-slate-200"><?php echo $_SESSION['nombre'] ?? 'Admin'; ?></p>
                 </div>
                 <div class="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center border border-slate-500">
-                    <i class="fas fa-user-shield text-xs text-cyan-400"></i>
+                    <span class="text-[10px] font-bold text-cyan-400">ADM</span>
                 </div>
-                <a href="index.php?action=logout" class="text-slate-400 hover:text-red-400 ml-2 transition">
-                    <i class="fas fa-power-off text-xs"></i>
+                <a href="index.php?action=logout" class="text-slate-400 hover:text-red-400 ml-2 transition text-[10px] font-bold uppercase">
+                    Salir
                 </a>
             </div>
         </div>
@@ -53,32 +45,19 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-                <div class="flex items-center gap-4">
-                    <div class="bg-amber-50 text-amber-500 p-3 rounded-2xl"><i class="fas fa-clock text-xl"></i></div>
-                    <div>
-                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Pendientes</p>
-                        <p class="text-2xl font-black text-slate-800">18 Casos</p>
-                    </div>
-                </div>
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Pendientes</p>
+                <p class="text-3xl font-black text-slate-800">18 Casos</p>
             </div>
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-                <div class="flex items-center gap-4">
-                    <div class="bg-red-50 text-red-500 p-3 rounded-2xl"><i class="fas fa-fire text-xl"></i></div>
-                    <div>
-                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Críticos</p>
-                        <p class="text-2xl font-black text-slate-800">5 Tickets</p>
-                    </div>
-                </div>
+            
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Críticos</p>
+                <p class="text-3xl font-black text-slate-800">5 Tickets</p>
             </div>
-            <div class="bg-emerald-500 p-6 rounded-3xl shadow-lg shadow-emerald-200 text-white">
-                <div class="flex items-center gap-4">
-                    <div class="bg-emerald-400/30 p-3 rounded-2xl"><i class="fas fa-check-circle text-xl"></i></div>
-                    <div>
-                        <p class="text-emerald-100 text-xs font-bold uppercase tracking-widest">Resueltos Hoy</p>
-                        <p class="text-2xl font-black">12 Éxitos</p>
-                    </div>
-                </div>
+            
+            <div class="bg-emerald-500 p-8 rounded-3xl shadow-lg shadow-emerald-200 text-white">
+                <p class="text-emerald-100 text-xs font-bold uppercase tracking-widest mb-1">Resueltos Hoy</p>
+                <p class="text-3xl font-black">12 Éxitos</p>
             </div>
         </div>
 
@@ -118,11 +97,9 @@
                                 <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-amber-50 text-amber-600 border border-amber-200">Abierto</span>
                             </td>
                             <td class="px-8 py-6 text-right">
-                                <div class="flex justify-end gap-2">
-                                    <button title="Gestionar" class="h-9 w-9 flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-cyan-600 hover:border-cyan-200 hover:shadow-sm transition-all">
-                                        <i class="fas fa-cog text-xs"></i>
-                                    </button>
-                                </div>
+                                <button class="px-4 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-cyan-500 hover:text-white transition-all text-[10px] font-bold uppercase tracking-widest">
+                                    Gestionar
+                                </button>
                             </td>
                         </tr>
                     </tbody>
