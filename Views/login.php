@@ -105,7 +105,7 @@
             <form action="index.php?action=procesar_login" method="POST">
                 <div class="input-group">
                     <label for="usuario">Correo Institucional</label>
-                    <input type="email" id="usuario" name="usuario" required placeholder="usuario@udb.edu.sv">
+                    <input type="email" id="usuario" name="usuario" required>
                 </div>
 
                 <!-- aqui realizamos el campo de clave (hemos quitado el boton de olvidar clave) -->
