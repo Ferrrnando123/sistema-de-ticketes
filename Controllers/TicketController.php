@@ -5,13 +5,15 @@ class TicketController {
     // esta es la funcion para registrar un nuevo ticket
     public function guardar() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $input = json_decode(file_get_contents('php://input'), true);
+            
             $data = [
                 'user_id' => $_SESSION['id'],
                 'email' => $_SESSION['email'],
-                'asunto' => $_POST['asunto'],
-                'descripcion' => $_POST['descripcion'],
-                'ubicacion' => $_POST['ubicacion'],
-                'prioridad' => $_POST['prioridad'],
+                'asunto' => $_POST['asunto'] ?? $input['asunto'] ?? '',
+                'descripcion' => $_POST['descripcion'] ?? $input['descripcion'] ?? '',
+                'ubicacion' => $_POST['ubicacion'] ?? $input['ubicacion'] ?? '',
+                'prioridad' => $_POST['prioridad'] ?? $input['prioridad'] ?? '',
                 'estado' => 'abierto'
             ];
 
@@ -19,11 +21,9 @@ class TicketController {
             $response = Supabase::request('/rest/v1/tickets', 'POST', $data, $_SESSION['access_token']);
 
             if ($response['status'] == 201) {
-                header("Location: index.php?action=mis-tickets&success=1");
-                exit();
+                jsonResponse(201, true, 'Ticket creado exitosamente');
             } else {
-                header("Location: index.php?action=nuevo-ticket&error=1");
-                exit();
+                jsonResponse(500, false, 'Error al crear el ticket');
             }
         }
     }
@@ -35,7 +35,7 @@ class TicketController {
         $response = Supabase::request("/rest/v1/tickets?user_id=eq.$userId&order=created_at.desc", 'GET', null, $_SESSION['access_token']);
         
         $tickets = ($response['status'] == 200) ? $response['data'] : [];
-        require 'Views/mis-tickets.php';
+        jsonResponse(200, true, 'Tickets obtenidos', $tickets);
     }
 
     // esta es la funcion para cargar las estadisticas y panel de administrador
@@ -72,22 +72,33 @@ class TicketController {
         $response = Supabase::request("/rest/v1/tickets?order=created_at.desc&limit=50", 'GET', null, $token);
         $tickets = ($response['status'] == 200) ? $response['data'] : [];
 
-        require 'Views/panelsoporte.php';
+        jsonResponse(200, true, 'Panel de soporte obtenido', [
+            'stats' => $stats,
+            'tickets' => $tickets
+        ]);
     }
 
     // esta es la funcion para cambiar el estado de un ticket (Admin)
     public function actualizarEstado() {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id']) && isset($_POST['estado'])) {
-            $id = $_POST['id'];
-            $nuevoEstado = $_POST['estado'];
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'PATCH') {
+            $input = json_decode(file_get_contents('php://input'), true);
+            $id = $_POST['id'] ?? $input['id'] ?? null;
+            $nuevoEstado = $_POST['estado'] ?? $input['estado'] ?? null;
 
-            $response = Supabase::request("/rest/v1/tickets?id=eq.$id", 'PATCH', [
-                'estado' => $nuevoEstado,
-                'updated_at' => date('c')
-            ], $_SESSION['access_token']);
+            if ($id && $nuevoEstado) {
+                $response = Supabase::request("/rest/v1/tickets?id=eq.$id", 'PATCH', [
+                    'estado' => $nuevoEstado,
+                    'updated_at' => date('c')
+                ], $_SESSION['access_token']);
 
-            header("Location: index.php?action=panel-soporte&updated=1");
-            exit();
+                if ($response['status'] == 200 || $response['status'] == 204) {
+                    jsonResponse(200, true, 'Estado actualizado');
+                } else {
+                    jsonResponse(500, false, 'Error al actualizar el estado');
+                }
+            } else {
+                jsonResponse(400, false, 'Faltan parámetros id o estado');
+            }
         }
     }
 }

@@ -1,0 +1,116 @@
+.admin-panel {
+  max-width: 1200px;
+  width: 100%;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background-color: var(--bg-card);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  border-left: 5px solid;
+}
+
+.stat-card.pending {
+  border-left-color: var(--warning-color);
+}
+.stat-card.critical {
+  border-left-color: var(--danger-color);
+}
+.stat-card.resolved {
+  border-left-color: var(--success-color);
+}
+
+.stat-title {
+  color: var(--secondary-color);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.admin-table th {
+  background-color: #f8fafc;
+  color: var(--secondary-color);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-table tbody tr {
+  transition: background-color 0.15s;
+}
+
+.admin-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.prio-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.prio-alta { background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+.prio-media { background-color: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+.prio-baja { background-color: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+
+.status-select {
+  padding: 0.35rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  font-size: 0.85rem;
+  font-weight: 600;
+  background-color: white;
+  cursor: pointer;
+}
+
+.status-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+/* Modificamos colores según el valor mediante la clase */
+.status-select.status-abierto { color: #2563eb; }
+.status-select.status-en_progreso { color: #d97706; }
+.status-select.status-resuelto { color: #166534; }
+.status-select.status-cerrado { color: #475569; }
+
+.status-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
