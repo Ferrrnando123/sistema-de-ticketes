@@ -1,6 +1,7 @@
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { Ticket, PlusCircle, HelpCircle } from 'lucide-react';
+import { BlurFade } from '../components/magicui/blur-fade';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -8,9 +9,15 @@ const Dashboard = () => {
   
   return (
     <div className="dashboard-container">
-      <header className="page-header">
-        <h1>Bienvenido, {user?.nombre?.split(' ')[0]} 👋</h1>
-        <p>¿En qué podemos ayudarte el día de hoy?</p>
+      <header className="page-header" style={{ paddingBottom: '1rem', borderBottom: 'none' }}>
+        <BlurFade delay={0.15} yOffset={12}>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-[#003366] tracking-tight mb-2">
+            Bienvenido, <span className="text-[#003366] font-black">{user?.nombre?.split(' ')[0]}</span>
+          </h1>
+        </BlurFade>
+        <BlurFade delay={0.3} yOffset={12}>
+          <p className="text-gray-500 font-medium text-lg">¿En qué podemos ayudarte el día de hoy?</p>
+        </BlurFade>
       </header>
       
       <div className="action-cards">

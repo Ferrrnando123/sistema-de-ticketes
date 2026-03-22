@@ -8,6 +8,7 @@
   width: 260px;
   background-color: #ffffff;
   border-right: 1px solid var(--border-color);
+  border-top: 4px solid var(--warning-color);
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -159,7 +160,7 @@
   display: none;
   padding: 1rem;
   background-color: white;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 2px solid var(--warning-color);
 }
 
 .content-wrapper {

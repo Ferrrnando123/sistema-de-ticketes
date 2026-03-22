@@ -16,7 +16,7 @@ const Layout = () => {
     <div className="layout-container">
       <aside className="sidebar">
         <div className="sidebar-header">
-          <h2>TicketSystem</h2>
+          <h2>UDB Tickets</h2>
           <span className="badge">{user?.rol === 'admin' ? 'Admin' : 'Alumno'}</span>
         </div>
         
@@ -57,7 +57,7 @@ const Layout = () => {
       
       <main className="main-content">
         <header className="mobile-header">
-           <h2>TicketSystem</h2>
+           <h2>UDB Tickets</h2>
         </header>
         <div className="content-wrapper">
           <Outlet />
