@@ -86,7 +86,7 @@ const Dashboard = () => {
         <h2 className="text-xl font-bold text-[#003366] dark:text-[#ffcc00] mb-8 pl-2 tracking-tight">
           Actividad Reciente del Soporte
         </h2>
-        <div className="relative flex w-full flex-col items-center justify-center overflow-hidden rounded-xl">
+        <div className="relative flex w-full flex-col items-center justify-center overflow-hidden rounded-xl gap-10">
           <Marquee pauseOnHover className="[--duration:40s] [--gap:2rem]">
             {firstRow.map((report) => (
               <ReportCard key={report.id} {...report} />

@@ -72,6 +72,14 @@ const MisTickets = () => {
               <h3 className="ticket-asunto">{ticket.asunto}</h3>
               <p className="ticket-desc">{ticket.descripcion}</p>
               
+              {ticket.foto_url && (
+                <div className="ticket-evidence">
+                  <a href={ticket.foto_url} target="_blank" rel="noopener noreferrer">
+                    <img src={ticket.foto_url} alt="Evidencia" className="evidence-preview" />
+                  </a>
+                </div>
+              )}
+
               <div className="ticket-footer">
                 <div className="ticket-meta">
                   <span className="meta-label">Ubicación: </span>

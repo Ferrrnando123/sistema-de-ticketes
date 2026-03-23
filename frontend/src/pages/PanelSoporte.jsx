@@ -100,7 +100,22 @@ const PanelSoporte = () => {
                     <td>#{t.id}</td>
                     <td>{new Date(t.created_at).toLocaleDateString()}</td>
                     <td>{t.email}</td>
-                    <td><strong>{t.asunto}</strong></td>
+                    <td>
+                      <div className="flex items-center gap-2">
+                        <strong>{t.asunto}</strong>
+                        {t.foto_url && (
+                          <a 
+                            href={t.foto_url} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            title="Ver Evidencia"
+                            className="text-blue-500 hover:text-blue-700"
+                          >
+                            🖼️
+                          </a>
+                        )}
+                      </div>
+                    </td>
                     <td>
                       <span className={`prio-badge prio-${t.prioridad}`}>{t.prioridad}</span>
                     </td>
@@ -112,9 +127,8 @@ const PanelSoporte = () => {
                         disabled={updatingId === t.id}
                       >
                         <option value="abierto">Abierto</option>
-                        <option value="en_progreso">En Progreso</option>
+                        <option value="en_proceso">En Proceso</option>
                         <option value="resuelto">Resuelto</option>
-                        <option value="cerrado">Cerrado</option>
                       </select>
                     </td>
                     <td>

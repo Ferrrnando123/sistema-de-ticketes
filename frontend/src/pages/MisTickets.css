@@ -116,3 +116,23 @@
   from { opacity: 0; transform: translateX(-15px); }
   to { opacity: 1; transform: translateX(0); }
 }
+
+.ticket-evidence {
+  margin-bottom: 1.5rem;
+}
+
+.evidence-preview {
+  width: 100%;
+  max-width: 250px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.evidence-preview:hover {
+  transform: scale(1.02);
+  box-shadow: var(--shadow-sm);
+}

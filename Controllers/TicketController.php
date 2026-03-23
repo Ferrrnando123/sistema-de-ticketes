@@ -97,23 +97,28 @@ class TicketController {
     // esta es la funcion para cambiar el estado de un ticket (Admin)
     public function actualizarEstado() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'PATCH') {
-            $input = json_decode(file_get_contents('php://input'), true);
+            $input = json_decode(file_get_contents('php://input'), true) ?: [];
             $id = $_POST['id'] ?? $input['id'] ?? null;
             $nuevoEstado = $_POST['estado'] ?? $input['estado'] ?? null;
 
-            if ($id && $nuevoEstado) {
-                $response = Supabase::request("/rest/v1/tickets?id=eq.$id", 'PATCH', [
-                    'estado' => $nuevoEstado,
-                    'updated_at' => date('c')
-                ], $_SESSION['access_token']);
+            if (!$id || !$nuevoEstado) {
+                jsonResponse(400, false, 'Faltan parámetros id o estado. Recibido: ' . json_encode(['id' => $id, 'estado' => $nuevoEstado]));
+            }
 
-                if ($response['status'] == 200 || $response['status'] == 204) {
-                    jsonResponse(200, true, 'Estado actualizado');
-                } else {
-                    jsonResponse(500, false, 'Error al actualizar el estado');
-                }
+            $token = $_SESSION['access_token'] ?? null;
+            if (!$token) {
+                jsonResponse(401, false, 'No se encontró el token de acceso en la sesión.');
+            }
+
+            $response = Supabase::request("/rest/v1/tickets?id=eq." . (int)$id, 'PATCH', [
+                'estado' => $nuevoEstado,
+                'updated_at' => date('c')
+            ], $token);
+
+            if ($response['status'] == 200 || $response['status'] == 204) {
+                jsonResponse(200, true, 'Estado actualizado');
             } else {
-                jsonResponse(400, false, 'Faltan parámetros id o estado');
+                jsonResponse(500, false, 'Error al actualizar el estado');
             }
         }
     }

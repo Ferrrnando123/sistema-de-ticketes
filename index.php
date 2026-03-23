@@ -31,7 +31,15 @@ $action = $_GET['action'] ?? 'login';
 // Función auxiliar para retornar respuestas JSON estandarizadas
 function jsonResponse($status, $success, $message, $data = null) {
     http_response_code($status);
-    echo json_encode(['success' => $success, 'message' => $message, 'data' => $data]);
+    $response = json_encode(['success' => $success, 'message' => $message, 'data' => $data]);
+    if ($response === false) {
+        $response = json_encode([
+            'success' => false, 
+            'message' => 'Error de codificación JSON: ' . json_last_error_msg(),
+            'data' => null
+        ]);
+    }
+    echo $response;
     exit();
 }
 

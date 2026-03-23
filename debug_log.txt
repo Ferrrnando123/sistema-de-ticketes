@@ -1,0 +1,1 @@
+[2026-03-23 03:39:21] {"status":400,"data":{"code":"23514","details":null,"hint":null,"message":"new row for relation \"tickets\" violates check constraint \"tickets_estado_check\""}}
