@@ -19,7 +19,6 @@ require_once 'Config/supabase.php';
 session_set_cookie_params([
     'lifetime' => 86400,
     'path' => '/',
-    'domain' => 'localhost',
     'secure' => false,
     'httponly' => true,
     'samesite' => 'Lax'
