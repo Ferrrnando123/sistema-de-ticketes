@@ -6,7 +6,7 @@
 
 .sidebar {
   width: 260px;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border-right: 1px solid var(--border-color);
   border-top: 4px solid var(--warning-color);
   display: flex;
@@ -14,6 +14,7 @@
   position: fixed;
   height: 100vh;
   z-index: 10;
+  transition: background-color 0.3s ease;
 }
 
 .sidebar-header {
@@ -59,7 +60,7 @@
 }
 
 .nav-link:hover, .nav-link:focus {
-  background-color: #f0f4f8;
+  background-color: var(--bg-hover, #f0f4f8);
   color: var(--primary-color);
 }
 
@@ -71,7 +72,7 @@
   color: var(--danger-color);
 }
 .admin-link:hover {
-  background-color: #fff5f5;
+  background-color: rgba(220, 53, 69, 0.1);
   color: var(--danger-color);
 }
 
@@ -144,7 +145,7 @@
 }
 
 .logout-btn:hover {
-  background-color: #f8f9fa;
+  background-color: rgba(220, 53, 69, 0.1);
   color: var(--danger-color);
   border-color: var(--danger-color);
 }
@@ -159,8 +160,9 @@
 .mobile-header {
   display: none;
   padding: 1rem;
-  background-color: white;
+  background-color: var(--bg-card);
   border-bottom: 2px solid var(--warning-color);
+  transition: background-color 0.3s ease;
 }
 
 .content-wrapper {

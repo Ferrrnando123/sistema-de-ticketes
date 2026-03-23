@@ -52,9 +52,11 @@
 }
 
 .dark {
-  --primary-color: #003366;
+  --primary-color: #3b82f6; 
   --bg-main: #0f172a;
   --bg-card: #1e293b;
+  --bg-sidebar: #1e293b;
+  --bg-hover: #334155;
   --text-dark: #f8f9fa;
   --text-light: #212529;
   --border-color: #334155;
