@@ -1,8 +1,18 @@
 @import "tailwindcss";
 
-@theme {
+@custom-variant dark (&:where(.dark, .dark *));
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+@theme inline {
   --animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear;
   --animate-slide: slide var(--speed) ease-in-out infinite alternate;
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
 
   @keyframes spin-around {
     0% { transform: translateZ(0) rotate(0); }
@@ -12,6 +22,14 @@
   }
   @keyframes slide {
     to { transform: translate(calc(100cqw - 100%), 0); }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(-100% - var(--gap))); }
+  }
+  @keyframes marquee-vertical {
+    from { transform: translateY(0); }
+    to { transform: translateY(calc(-100% - var(--gap))); }
   }
 }
 
@@ -31,6 +49,15 @@
   --shadow-md: 0 .5rem 1rem rgba(0,0,0,.15);
   
   --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.dark {
+  --primary-color: #003366;
+  --bg-main: #0f172a;
+  --bg-card: #1e293b;
+  --text-dark: #f8f9fa;
+  --text-light: #212529;
+  --border-color: #334155;
 }
 
 * {

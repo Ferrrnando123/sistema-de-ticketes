@@ -46,4 +46,38 @@ class Supabase {
             'data' => json_decode($response, true)
         ];
     }
+
+    // esta es la funcion para subir archivos (fotos) a Supabase Storage
+    public static function uploadFile($endpoint, $filePath, $mimeType, $token = null) {
+        $url = SUPABASE_URL . $endpoint;
+        $ch = curl_init($url);
+        
+        $headers = [
+            'apikey: ' . SUPABASE_KEY,
+            'Content-Type: ' . $mimeType
+        ];
+
+        if ($token) {
+            $headers[] = 'Authorization: Bearer ' . $token;
+        } else {
+            $headers[] = 'Authorization: Bearer ' . SUPABASE_KEY;
+        }
+
+        $fileData = file_get_contents($filePath);
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fileData);
+
+        $response = curl_exec($ch);
+        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        return [
+            'status' => $status,
+            'data' => json_decode($response, true)
+        ];
+    }
 }

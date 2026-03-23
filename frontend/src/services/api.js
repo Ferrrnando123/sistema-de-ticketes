@@ -8,8 +8,10 @@ export const apiFetch = async (action, options = {}) => {
     ...(options.headers || {})
   };
 
-  // If there's a body and it's an object, stringify it
-  if (options.body && typeof options.body === 'object') {
+  // Si hay body y es un FormData, no lo tocamos ni le forzamos Content-Type
+  if (options.body instanceof FormData) {
+    // El navegador asignará Content-Type: multipart/form-data automáticamente
+  } else if (options.body && typeof options.body === 'object') {
     options.body = JSON.stringify(options.body);
     headers['Content-Type'] = 'application/json';
   }

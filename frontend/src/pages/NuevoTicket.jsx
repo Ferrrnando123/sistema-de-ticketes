@@ -14,9 +14,16 @@ const NuevoTicket = () => {
     ubicacion: '',
     prioridad: 'baja'
   });
+  const [foto, setFoto] = useState(null);
 
   const handleChange = (e) => {
     setFormData({...formData, [e.target.name]: e.target.value});
+  };
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setFoto(e.target.files[0]);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -25,9 +32,18 @@ const NuevoTicket = () => {
     setError('');
 
     try {
+      const data = new FormData();
+      data.append('asunto', formData.asunto);
+      data.append('descripcion', formData.descripcion);
+      data.append('ubicacion', formData.ubicacion);
+      data.append('prioridad', formData.prioridad);
+      if (foto) {
+        data.append('foto', foto);
+      }
+
       const resp = await apiFetch('guardar_ticket', {
         method: 'POST',
-        body: formData
+        body: data
       });
       if (resp.success) {
         navigate('/mis-tickets');
@@ -97,6 +113,16 @@ const NuevoTicket = () => {
                 <option value="alta">🔴 Alta (Crítico / Bloqueante)</option>
               </select>
             </div>
+          </div>
+
+          <div className="form-group">
+            <label>Subir Evidencia (Opcional)</label>
+            <input 
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#003366] file:text-white hover:file:bg-[#002244] dark:file:bg-[#ffcc00] dark:file:text-[#003366]"
+            />
           </div>
           
           <div className="form-actions">

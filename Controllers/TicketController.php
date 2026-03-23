@@ -7,6 +7,21 @@ class TicketController {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $input = json_decode(file_get_contents('php://input'), true);
             
+            $fotoUrl = null;
+            if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+                // Subir archivo al bucket 'tickets' de Supabase Storage
+                $tmpPath = $_FILES['foto']['tmp_name'];
+                $mimeType = $_FILES['foto']['type'];
+                $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+                $filename = uniqid('t_') . '.' . $ext;
+                
+                $uploadRes = Supabase::uploadFile('/storage/v1/object/tickets/' . $filename, $tmpPath, $mimeType, $_SESSION['access_token']);
+                
+                if ($uploadRes['status'] == 200 || $uploadRes['status'] == 201) {
+                    $fotoUrl = SUPABASE_URL . '/storage/v1/object/public/tickets/' . $filename;
+                }
+            }
+
             $data = [
                 'user_id' => $_SESSION['id'],
                 'email' => $_SESSION['email'],
@@ -14,6 +29,7 @@ class TicketController {
                 'descripcion' => $_POST['descripcion'] ?? $input['descripcion'] ?? '',
                 'ubicacion' => $_POST['ubicacion'] ?? $input['ubicacion'] ?? '',
                 'prioridad' => $_POST['prioridad'] ?? $input['prioridad'] ?? '',
+                'foto_url' => $fotoUrl,
                 'estado' => 'abierto'
             ];
 

@@ -1,6 +1,7 @@
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, Home, Ticket, HelpCircle, LayoutDashboard } from 'lucide-react';
+import { AnimatedThemeToggler } from './magicui/animated-theme-toggler';
 import './Layout.css';
 
 const Layout = () => {
@@ -42,14 +43,17 @@ const Layout = () => {
         </nav>
         
         <div className="sidebar-footer">
-          <div className="user-info">
-            <div className="avatar">{user?.nombre?.charAt(0).toUpperCase()}</div>
-            <div className="user-details">
-              <strong>{user?.nombre}</strong>
-              <small>{user?.email}</small>
+          <div className="user-info" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="avatar">{user?.nombre?.charAt(0).toUpperCase()}</div>
+              <div className="user-details">
+                <strong>{user?.nombre}</strong>
+                <small>{user?.email}</small>
+              </div>
             </div>
+            <AnimatedThemeToggler />
           </div>
-          <button onClick={handleLogout} className="logout-btn">
+          <button onClick={handleLogout} className="logout-btn" style={{ marginTop: '0.75rem' }}>
             <LogOut size={18} /> Salir
           </button>
         </div>
