@@ -37,6 +37,7 @@
   font-weight: 500;
   margin-bottom: 0.5rem;
   font-size: 0.95rem;
+  color: var(--text-dark);
 }
 
 .form-group input,
@@ -49,7 +50,8 @@
   font-family: inherit;
   font-size: 1rem;
   transition: border-color 0.2s, box-shadow 0.2s;
-  background-color: #fff;
+  background-color: var(--bg-card);
+  color: var(--text-dark);
 }
 
 .form-group input:focus,
@@ -57,7 +59,7 @@
 .form-group select:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .form-row {
