@@ -1,6 +1,8 @@
-const API_URL = 'http://localhost/sistema-de-ticketes/index.php';
+
+const API_URL = 'http://localhost:8000/index.php';
 
 export const apiFetch = async (action, options = {}) => {
+  // 2.  la URL correcta
   const url = `${API_URL}?action=${action}`;
 
   const headers = {
@@ -8,7 +10,7 @@ export const apiFetch = async (action, options = {}) => {
     ...(options.headers || {})
   };
 
-  // Si hay body y es un FormData, no lo tocamos ni le forzamos Content-Type
+  // Manejo de el cuerpo de la petición (JSON o FormData)
   if (options.body instanceof FormData) {
     // El navegador asignará Content-Type: multipart/form-data automáticamente
   } else if (options.body && typeof options.body === 'object') {
@@ -16,30 +18,29 @@ export const apiFetch = async (action, options = {}) => {
     headers['Content-Type'] = 'application/json';
   }
 
-  // Ensure cookies are sent for standard PHP sessions to work
+  // Configuración de fetch
   const fetchOptions = {
     ...options,
     headers,
-    credentials: 'init' // Required for PHP $_SESSION cookies
+    // 'include' es vital para que las cookies de sesión de PHP (puerto 8000) 
+    // se guarden en el navegador del frontend (puerto 5173)
+    credentials: 'include' 
   };
-
-  // Set include so cross-origin requests send cookies on localhost
-  fetchOptions.credentials = 'include';
 
   try {
     const response = await fetch(url, fetchOptions);
+    
+    // Intentamos parsear el JSON de respuesta
     const data = await response.json();
 
-    // We can handle specific HTTP status codes here if we want
-    // Nuestro backend siempre retorna un JSON estructurado aunque el HTTP status sea 4xx/5xx
-    // Por ende, podemos retornar el 'data' para leer success/message nativamente sin romper la promesa.
-    if (!response.ok && !data) {
-        throw new Error('Error en la petición');
+    // Si la respuesta no es 2xx pero tenemos un mensaje del backend, lo usamos
+    if (!response.ok) {
+        console.error(`Error del servidor (${response.status}):`, data.message);
     }
     
     return data;
   } catch (error) {
-      console.error(`API Error on action [${action}]: `, error);
+      console.error(`Error de red o conexión en la acción [${action}]: `, error);
       throw error;
     }
 };
