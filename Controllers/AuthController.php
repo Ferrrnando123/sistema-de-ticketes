@@ -5,8 +5,14 @@ class AuthController {
     // esta es la funcion para procesar el inicio de sesión
     public function procesarLogin() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $email = $_POST['usuario']; // El form usa el nombre 'usuario'
-            $pass = $_POST['password'];
+            // Soporte para FormData o JSON application/json
+            $input = json_decode(file_get_contents('php://input'), true);
+            $email = $_POST['usuario'] ?? $input['usuario'] ?? '';
+            $pass = $_POST['password'] ?? $input['password'] ?? '';
+
+            if (empty($email) || empty($pass)) {
+                jsonResponse(400, false, 'Usuario y contraseña son requeridos');
+            }
 
             // aqui conectamos con la api de supabase para validar el usuario
             $response = Supabase::request('/auth/v1/token?grant_type=password', 'POST', [
@@ -33,13 +39,16 @@ class AuthController {
                 // aqui hacemos el cambio para mostrar el loader solo al loguear
                 $_SESSION['mostrar_loading'] = true;
 
-                // aqui realizamos la redireccion al dashboard una vez logueado
-                header("Location: index.php?action=dashboard");
-                exit();
+                // aqui devolvemos los datos del usuario en JSON
+                jsonResponse(200, true, 'Login exitoso', [
+                    'id' => $_SESSION['id'],
+                    'email' => $_SESSION['email'],
+                    'nombre' => $_SESSION['nombre'],
+                    'rol' => $_SESSION['rol']
+                ]);
             } else {
                 // Error de login
-                header("Location: index.php?error=1");
-                exit();
+                jsonResponse(401, false, 'Credenciales incorrectas');
             }
         }
     }
