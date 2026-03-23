@@ -103,17 +103,6 @@ const PanelSoporte = () => {
                     <td>
                       <div className="flex items-center gap-2">
                         <strong>{t.asunto}</strong>
-                        {t.foto_url && (
-                          <a 
-                            href={t.foto_url} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            title="Ver Evidencia"
-                            className="text-blue-500 hover:text-blue-700"
-                          >
-                            🖼️
-                          </a>
-                        )}
                       </div>
                     </td>
                     <td>
@@ -132,10 +121,19 @@ const PanelSoporte = () => {
                       </select>
                     </td>
                     <td>
-                      {/* Aquí podrían ir más acciones como Ver Detalles, Asignar a... */}
-                      <button className="btn btn-outline" style={{padding: '0.25rem 0.5rem', fontSize: '0.8rem'}}>
-                        Detalles
-                      </button>
+                      {t.foto_url ? (
+                        <a 
+                          href={t.foto_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="btn btn-outline"
+                          style={{padding: '0.25rem 0.5rem', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-block'}}
+                        >
+                          Ver Imagen
+                        </a>
+                      ) : (
+                        <span className="text-gray-400 text-xs italic">Sin imagen</span>
+                      )}
                     </td>
                   </tr>
                 ))}
