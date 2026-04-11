@@ -31,7 +31,7 @@ class Supabase {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_HEADER, true); // Retornar cabeceras en el output
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
@@ -40,12 +40,27 @@ class Supabase {
         }
 
         $response = curl_exec($ch);
+        $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        
+        $responseHeaders = substr($response, 0, $headerSize);
+        $body = substr($response, $headerSize);
+        
         curl_close($ch);
+
+        // Convertir headers a un array asociativo
+        $parsedHeaders = [];
+        foreach (explode("\r\n", $responseHeaders) as $line) {
+            if (strpos($line, ':') !== false) {
+                list($key, $value) = explode(':', $line, 2);
+                $parsedHeaders[strtolower(trim($key))] = trim($value);
+            }
+        }
 
         return [
             'status' => $status,
-            'data' => json_decode($response, true)
+            'headers' => $parsedHeaders,
+            'data' => json_decode($body, true)
         ];
     }
 

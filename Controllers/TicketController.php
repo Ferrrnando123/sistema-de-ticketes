@@ -58,34 +58,30 @@ class TicketController {
     public function panelSoporte() {
         $token = $_SESSION['access_token'];
         $hoy = date('Y-m-d');
+        $stats = [];
 
-        // 1. Obtener conteos ligeros desde Supabase (usando Prefer: count=exact y limit=0 para no traer datos)
-        // Pendientes (No resueltos)
-        $pRes = Supabase::request("/rest/v1/tickets?estado=neq.resuelto", 'GET', null, $token, ["Prefer: count=exact", "Range: 0-0"]);
-        $stats['pendientes'] = $pRes['data'][0]['count'] ?? 0;
-        if (isset($pRes['data']) && empty($pRes['data'])) {
-             // Workaround si Supabase no devuelve el count en el body (depende de la config de PostgREST)
-             // Pero usualmente se prefiere leer el header 'Content-Range' el cual mi helper actual no captura.
-             // Como solución rápida y efectiva para este caso: Pedir solo el ID de los que cumplen la condición.
-        }
+        // Helper para obtener el conteo desde los headers de Supabase (PostgREST)
+        $getCount = function($query) use ($token) {
+            $res = Supabase::request($query, 'GET', null, $token, [
+                "Prefer: count=exact",
+                "Range: 0-0"
+            ]);
+            
+            if (isset($res['headers']['content-range'])) {
+                // El formato es "0-0/total" o "*/total"
+                $parts = explode('/', $res['headers']['content-range']);
+                return (int) end($parts);
+            }
+            return 0;
+        };
 
-        // RE-OPTIMIZACIÓN: Usar rpc o simplemente filtrar con selects específicos
-        // Para no complicar el helper con lectura de headers de respuesta, haremos selects filtrados:
-        
-        // Pendientes
-        $pendientes = Supabase::request("/rest/v1/tickets?select=id&estado=neq.resuelto", 'GET', null, $token);
-        $stats['pendientes'] = is_array($pendientes['data']) ? count($pendientes['data']) : 0;
+        // 1. Obtener conteos ultra-ligeros (solo headers, sin descargar filas)
+        $stats['pendientes'] = $getCount("/rest/v1/tickets?estado=neq.resuelto");
+        $stats['criticos'] = $getCount("/rest/v1/tickets?prioridad=eq.alta&estado=neq.resuelto");
+        $stats['resueltos_hoy'] = $getCount("/rest/v1/tickets?estado=eq.resuelto&updated_at=gte.$hoy");
 
-        // Críticos (Alta y no resueltos)
-        $criticos = Supabase::request("/rest/v1/tickets?select=id&prioridad=eq.alta&estado=neq.resuelto", 'GET', null, $token);
-        $stats['criticos'] = is_array($criticos['data']) ? count($criticos['data']) : 0;
-
-        // Resueltos Hoy
-        $resueltosHoy = Supabase::request("/rest/v1/tickets?select=id&estado=eq.resuelto&updated_at=gte.$hoy", 'GET', null, $token);
-        $stats['resueltos_hoy'] = is_array($resueltosHoy['data']) ? count($resueltosHoy['data']) : 0;
-
-        // 2. Obtener solo los últimos 50 tickets para mostrar en la tabla
-        $response = Supabase::request("/rest/v1/tickets?order=created_at.desc&limit=50", 'GET', null, $token);
+        // 2. Obtener solo los últimos 50 tickets para mostrar en la tabla (con datos)
+        $response = Supabase::request("/rest/v1/tickets?select=*&order=created_at.desc&limit=50", 'GET', null, $token);
         $tickets = ($response['status'] == 200) ? $response['data'] : [];
 
         jsonResponse(200, true, 'Panel de soporte obtenido', [

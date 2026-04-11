@@ -55,93 +55,107 @@ const PanelSoporte = () => {
           <p className="page-subtitle">Gestión global de tickets e incidentes.</p>
         </div>
         <button onClick={fetchPanel} className="btn btn-outline" disabled={loading}>
-            {loading ? 'Sincronizando...' : 'Refrescar'}
+          {loading ? 'Sincronizando...' : 'Refrescar'}
         </button>
       </div>
 
       {error && <div className="alert-error">{error}</div>}
 
-      <div className="stats-grid">
-        <div className="stat-card pending">
-          <div className="stat-title">Pendientes</div>
-          <div className="stat-value">{data.stats?.pendientes || 0}</div>
-        </div>
-        <div className="stat-card critical">
-          <div className="stat-title">Críticos Activos</div>
-          <div className="stat-value">{data.stats?.criticos || 0}</div>
-        </div>
-        <div className="stat-card resolved">
-          <div className="stat-title">Resueltos Hoy</div>
-          <div className="stat-value">{data.stats?.resueltos_hoy || 0}</div>
-        </div>
-      </div>
-
-      <div className="card admin-table-container">
-        <h3 style={{marginBottom: '1rem'}}>Últimos 50 Tickets</h3>
-        {loading && data.tickets.length === 0 ? (
-          <div className="loader-container">Cargando base de datos...</div>
-        ) : (
-          <div className="table-responsive">
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Fecha</th>
-                  <th>Usuario</th>
-                  <th>Asunto</th>
-                  <th>Prioridad</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.tickets.map(t => (
-                  <tr key={t.id}>
-                    <td>#{t.id}</td>
-                    <td>{new Date(t.created_at).toLocaleDateString()}</td>
-                    <td>{t.email}</td>
-                    <td>
-                      <div className="flex items-center gap-2">
-                        <strong>{t.asunto}</strong>
-                      </div>
-                    </td>
-                    <td>
-                      <span className={`prio-badge prio-${t.prioridad}`}>{t.prioridad}</span>
-                    </td>
-                    <td>
-                      <select 
-                        className={`status-select status-${t.estado}`}
-                        value={t.estado}
-                        onChange={(e) => updateStatus(t.id, e.target.value)}
-                        disabled={updatingId === t.id}
-                      >
-                        <option value="abierto">Abierto</option>
-                        <option value="en_proceso">En Proceso</option>
-                        <option value="resuelto">Resuelto</option>
-                      </select>
-                    </td>
-                    <td>
-                      {t.foto_url ? (
-                        <a 
-                          href={t.foto_url} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="btn btn-outline"
-                          style={{padding: '0.25rem 0.5rem', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-block'}}
-                        >
-                          Ver Imagen
-                        </a>
-                      ) : (
-                        <span className="text-gray-400 text-xs italic">Sin imagen</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      {loading && data.tickets.length === 0 ? (
+        <>
+          <div className="stats-skeleton">
+            <div className="stat-skeleton-card"></div>
+            <div className="stat-skeleton-card"></div>
+            <div className="stat-skeleton-card"></div>
           </div>
-        )}
-      </div>
+          <div className="card admin-table-container">
+            <div className="loader-container">
+              <div className="spinner"></div>
+              <p>Cargando base de datos...</p>
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="stats-grid">
+            <div className="stat-card pending">
+              <div className="stat-title">Pendientes</div>
+              <div className="stat-value">{data.stats?.pendientes || 0}</div>
+            </div>
+            <div className="stat-card critical">
+              <div className="stat-title">Críticos Activos</div>
+              <div className="stat-value">{data.stats?.criticos || 0}</div>
+            </div>
+            <div className="stat-card resolved">
+              <div className="stat-title">Resueltos Hoy</div>
+              <div className="stat-value">{data.stats?.resueltos_hoy || 0}</div>
+            </div>
+          </div>
+
+          <div className="card admin-table-container">
+            <h3 style={{ marginBottom: '1rem' }}>Últimos 50 Tickets</h3>
+            <div className="table-responsive">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Usuario</th>
+                    <th>Asunto</th>
+                    <th>Prioridad</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.tickets.map(t => (
+                    <tr key={t.id}>
+                      <td>#{t.id}</td>
+                      <td>{new Date(t.created_at).toLocaleDateString()}</td>
+                      <td>{t.email}</td>
+                      <td>
+                        <div className="flex items-center gap-2">
+                          <strong>{t.asunto}</strong>
+                        </div>
+                      </td>
+                      <td>
+                        <span className={`prio-badge prio-${t.prioridad}`}>{t.prioridad}</span>
+                      </td>
+                      <td>
+                        <select
+                          className={`status-select status-${t.estado}`}
+                          value={t.estado}
+                          onChange={(e) => updateStatus(t.id, e.target.value)}
+                          disabled={updatingId === t.id}
+                        >
+                          <option value="abierto">Abierto</option>
+                          <option value="en_proceso">En Proceso</option>
+                          <option value="resuelto">Resuelto</option>
+                        </select>
+                      </td>
+                      <td>
+                        {t.foto_url ? (
+                          <a
+                            href={t.foto_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-outline"
+                            style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-block' }}
+                          >
+                            Ver Imagen
+                          </a>
+                        ) : (
+                          <span className="text-gray-400 text-xs italic">Sin imagen</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
