@@ -86,6 +86,7 @@
 }
 
 .prio-alta { background-color: rgba(220, 53, 69, 0.1); color: #dc2626; border: 1px solid rgba(220, 53, 69, 0.2); }
+.prio-critica { background-color: rgba(127, 29, 29, 0.14); color: #7f1d1d; border: 1px solid rgba(127, 29, 29, 0.24); }
 .prio-media { background-color: rgba(217, 119, 6, 0.1); color: #d97706; border: 1px solid rgba(217, 119, 6, 0.2); }
 .prio-baja { background-color: rgba(22, 163, 74, 0.1); color: #16a34a; border: 1px solid rgba(22, 163, 74, 0.2); }
 

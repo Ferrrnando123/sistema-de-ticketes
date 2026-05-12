@@ -1,16 +1,46 @@
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, Home, Ticket, HelpCircle, LayoutDashboard } from 'lucide-react';
+import { Bell, LogOut, Home, Ticket, HelpCircle, LayoutDashboard } from 'lucide-react';
 import { AnimatedThemeToggler } from './magicui/animated-theme-toggler';
+import { BlurFade } from './magicui/blur-fade';
+import { apiFetch } from '../services/api';
+import { useEffect, useMemo, useState } from 'react';
 import './Layout.css';
 
 const Layout = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notifs, setNotifs] = useState([]);
+  const unreadCount = useMemo(() => notifs.filter(n => !n.leida).length, [notifs]);
 
   const handleLogout = async () => {
     await logout();
     navigate('/login');
+  };
+
+  const loadNotifs = async () => {
+    try {
+      const resp = await apiFetch('notificaciones_listar', { method: 'GET' });
+      if (resp.success) setNotifs(resp.data || []);
+    } catch {
+      // silencioso
+    }
+  };
+
+  useEffect(() => {
+    loadNotifs();
+    const t = setInterval(() => loadNotifs(), 25000);
+    return () => clearInterval(t);
+  }, []);
+
+  const markRead = async (id) => {
+    try {
+      await apiFetch('notificaciones_marcar_leida', { method: 'PATCH', body: { id } });
+      setNotifs((prev) => prev.map((n) => (n.id === id ? { ...n, leida: true } : n)));
+    } catch {
+      // noop
+    }
   };
 
   return (
@@ -51,7 +81,59 @@ const Layout = () => {
                 <small>{user?.email}</small>
               </div>
             </div>
-            <AnimatedThemeToggler />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div className="notif-wrap">
+                <button
+                  type="button"
+                  className="notif-btn"
+                  onClick={() => {
+                    setNotifOpen(v => !v);
+                    if (!notifOpen) loadNotifs();
+                  }}
+                  aria-label="Notificaciones"
+                >
+                  <Bell size={18} />
+                  {unreadCount > 0 && <span className="notif-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>}
+                </button>
+
+                {notifOpen && (
+                  <BlurFade delay={0.02} yOffset={6} inView>
+                    <div className="notif-panel">
+                      <div className="notif-title">
+                        <span>Notificaciones</span>
+                        <button type="button" className="notif-link" onClick={loadNotifs}>
+                          Actualizar
+                        </button>
+                      </div>
+
+                      {notifs.length === 0 ? (
+                        <div className="notif-empty">Sin notificaciones por ahora.</div>
+                      ) : (
+                        <div className="notif-list">
+                          {notifs.slice(0, 8).map((n) => (
+                            <button
+                              key={n.id}
+                              type="button"
+                              className={`notif-item ${n.leida ? 'read' : 'unread'}`}
+                              onClick={() => {
+                                if (!n.leida) markRead(n.id);
+                                if (n.ticket_id) navigate(`/tickets/${n.ticket_id}`);
+                                setNotifOpen(false);
+                              }}
+                            >
+                              <div className="notif-item-title">{n.titulo}</div>
+                              <div className="notif-item-body">{n.cuerpo}</div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </BlurFade>
+                )}
+              </div>
+
+              <AnimatedThemeToggler />
+            </div>
           </div>
           <button onClick={handleLogout} className="logout-btn" style={{ marginTop: '0.75rem' }}>
             <LogOut size={18} /> Salir

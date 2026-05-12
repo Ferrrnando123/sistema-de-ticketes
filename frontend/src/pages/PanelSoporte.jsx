@@ -1,9 +1,26 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { apiFetch } from '../services/api';
+import { BlurFade } from '../components/magicui/blur-fade';
+import { Link } from 'react-router-dom';
+import {
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+  BarChart,
+  Bar,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+} from 'recharts';
 import './PanelSoporte.css';
 
+const COLORS = ['#003366', '#ffcc00', '#22c55e', '#ef4444', '#8b5cf6', '#06b6d4'];
+
 const PanelSoporte = () => {
-  const [data, setData] = useState({ stats: {}, tickets: [] });
+  const [data, setData] = useState({ stats: {}, tickets: [], charts: { estado: [], categorias: [] } });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [updatingId, setUpdatingId] = useState(null);
@@ -20,7 +37,7 @@ const PanelSoporte = () => {
       } else {
         setError(resp.message);
       }
-    } catch (err) {
+    } catch {
       setError('Error cargando el panel de soporte.');
     } finally {
       setLoading(false);
@@ -32,20 +49,22 @@ const PanelSoporte = () => {
     try {
       const resp = await apiFetch('actualizar_estado', {
         method: 'PATCH',
-        body: { id, estado: newStatus }
+        body: { id, estado: newStatus },
       });
       if (resp.success) {
-        // Optimistic UI update or refetch
         fetchPanel();
       } else {
         alert(resp.message || 'Error actualizando el estado.');
       }
-    } catch (err) {
+    } catch {
       alert('Error de red al actualizar el estado.');
     } finally {
       setUpdatingId(null);
     }
   };
+
+  const estadoData = useMemo(() => data?.charts?.estado || [], [data]);
+  const catData = useMemo(() => data?.charts?.categorias || [], [data]);
 
   return (
     <div className="page-container admin-panel animate-fade">
@@ -92,6 +111,46 @@ const PanelSoporte = () => {
             </div>
           </div>
 
+          <div className="card admin-table-container" style={{ marginTop: '1.25rem' }}>
+            <BlurFade delay={0.06} yOffset={10}>
+              <h3 style={{ marginBottom: '0.75rem' }}>Estadísticas Globales</h3>
+            </BlurFade>
+
+            <div className="grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="card" style={{ padding: '1rem' }}>
+                <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Tickets por estado</div>
+                <div style={{ width: '100%', height: 280 }}>
+                  <ResponsiveContainer>
+                    <PieChart>
+                      <Pie data={estadoData} dataKey="value" nameKey="name" innerRadius={55} outerRadius={85} paddingAngle={3}>
+                        {estadoData.map((_, index) => (
+                          <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              <div className="card" style={{ padding: '1rem' }}>
+                <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Fallas más comunes (categorías)</div>
+                <div style={{ width: '100%', height: 280 }}>
+                  <ResponsiveContainer>
+                    <BarChart data={catData}>
+                      <CartesianGrid strokeDasharray="3 3" opacity={0.25} />
+                      <XAxis dataKey="categoria" tick={{ fontSize: 10 }} interval={0} angle={-15} height={50} />
+                      <YAxis allowDecimals={false} />
+                      <Tooltip />
+                      <Bar dataKey="count" fill="#003366" radius={[8, 8, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="card admin-table-container">
             <h3 style={{ marginBottom: '1rem' }}>Últimos 50 Tickets</h3>
             <div className="table-responsive">
@@ -108,7 +167,7 @@ const PanelSoporte = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.tickets.map(t => (
+                  {data.tickets.map((t) => (
                     <tr key={t.id}>
                       <td>#{t.id}</td>
                       <td>{new Date(t.created_at).toLocaleDateString()}</td>
@@ -133,7 +192,10 @@ const PanelSoporte = () => {
                           <option value="resuelto">Resuelto</option>
                         </select>
                       </td>
-                      <td>
+                      <td style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                        <Link to={`/tickets/${t.id}`} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem', textDecoration: 'none' }}>
+                          Detalle/Chat
+                        </Link>
                         {t.foto_url ? (
                           <a
                             href={t.foto_url}
@@ -161,3 +223,4 @@ const PanelSoporte = () => {
 };
 
 export default PanelSoporte;
+

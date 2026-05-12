@@ -1,0 +1,100 @@
+.ticket-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.ticket-detail-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.meta-pill {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  padding: 0.75rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.chat-shell {
+  margin-top: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(12px);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.chat-header {
+  padding: 1rem 1.1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.chat-body {
+  padding: 1rem;
+  height: 360px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.bubble {
+  max-width: 76%;
+  padding: 0.7rem 0.9rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.60);
+  color: #1f2937;
+  box-shadow: var(--shadow-sm);
+}
+
+.bubble.mine {
+  align-self: flex-end;
+  background: rgba(0, 51, 102, 0.10);
+  border-color: rgba(0, 51, 102, 0.18);
+}
+
+.bubble.admin {
+  align-self: flex-start;
+  background: rgba(255, 204, 0, 0.14);
+  border-color: rgba(255, 204, 0, 0.22);
+}
+
+.bubble-meta {
+  font-size: 11px;
+  color: rgba(107, 114, 128, 1);
+  margin-top: 0.35rem;
+}
+
+.chat-input {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.9rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.20);
+}
+
+.chat-input input {
+  flex: 1;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 0.75rem 0.9rem;
+  outline: none;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.chat-input input:focus {
+  border-color: rgba(0, 51, 102, 0.30);
+  box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.12);
+}
+
