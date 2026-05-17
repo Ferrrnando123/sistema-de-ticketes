@@ -6,131 +6,8 @@ class TicketController {
         return (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin');
     }
 
-    private function normalizeText($text) {
-        $text = (string)($text ?? '');
-        $text = trim(mb_strtolower($text, 'UTF-8'));
-        $text = preg_replace('/\s+/u', ' ', $text);
-        return $text;
-    }
-
-    // Fallback local si Gemini falla
-    private function heuristicAnalyzeTicketText($asunto, $descripcion) {
-        $text = $this->normalizeText($asunto . ' ' . $descripcion);
-
-        $banned = [
-            'idiota', 'imbecil', 'imbécil', 'estupido', 'estúpido', 'pendejo', 'pendeja',
-            'mierda', 'puta', 'puto', 'malparido', 'cerote', 'hijueputa', 'hijo de puta',
-            'tonto', 'basura', 'cagada'
-        ];
-
-        foreach ($banned as $w) {
-            if (mb_strpos($text, $w) !== false) {
-                return [
-                    'blocked' => true,
-                    'reason' => 'Contenido ofensivo detectado. Por favor redacta el ticket con respeto.',
-                    'priority' => 'media'
-                ];
-            }
-        }
-
-        $plain = preg_replace('/[^a-z0-9áéíóúñ ]/iu', '', $text);
-        $words = array_values(array_filter(explode(' ', $plain), fn($t) => $t !== ''));
-        if (mb_strlen($text, 'UTF-8') < 12 || count($words) < 3) {
-            return [
-                'blocked' => true,
-                'reason' => 'Descripción muy corta o poco clara. Agrega más detalle para poder ayudarte.',
-                'priority' => 'baja'
-            ];
-        }
-        if (preg_match('/(jaja|jeje|xd|lol){2,}/iu', $text) || preg_match('/(.)\\1{6,}/u', $text)) {
-            return [
-                'blocked' => true,
-                'reason' => 'El contenido parece no serio o con spam. Por favor detalla el problema de forma clara.',
-                'priority' => 'baja'
-            ];
-        }
-        if (preg_match('/\\b(test|prueba|asdf|qwer)\\b/iu', $text)) {
-            return [
-                'blocked' => true,
-                'reason' => 'El ticket parece de prueba. Si es un incidente real, describe el problema y su impacto.',
-                'priority' => 'baja'
-            ];
-        }
-
-        $critica = [
-            'incendio', 'fuga', 'electrico', 'eléctrico', 'corto circuito', 'descarga', 'seguridad',
-            'emergencia', 'caído', 'caida', 'caída', 'servidor caido', 'servidor caído',
-            'sin internet', 'internet caido', 'internet caído', 'no hay internet', 'bloqueante',
-            'no puedo acceder', 'no puedo entrar'
-        ];
-        $alta = [
-            'urgente', 'inmediato', 'hoy', 'clase', 'examen', 'evaluación', 'evaluacion',
-            'no funciona', 'no enciende', 'error 500', 'no imprime', 'impresora atorada',
-            'red lenta', 'wifi no', 'no hay wifi', 'sin wifi'
-        ];
-        $media = [
-            'intermitente', 'lento', 'lentitud', 'fallando', 'inestable', 'actualizar',
-            'actualización', 'configurar', 'configuración', 'ayuda'
-        ];
-
-        $priority = 'baja';
-        foreach ($critica as $k) {
-            if (mb_strpos($text, $k) !== false) {
-                $priority = 'critica';
-                break;
-            }
-        }
-        if ($priority !== 'critica') {
-            foreach ($alta as $k) {
-                if (mb_strpos($text, $k) !== false) {
-                    $priority = 'alta';
-                    break;
-                }
-            }
-        }
-        if ($priority === 'baja') {
-            foreach ($media as $k) {
-                if (mb_strpos($text, $k) !== false) {
-                    $priority = 'media';
-                    break;
-                }
-            }
-        }
-
-        return ['blocked' => false, 'reason' => null, 'priority' => $priority, 'source' => 'heuristic'];
-    }
-
-    // IA real con Gemini + fallback heurístico
-    // Retorna: ['blocked' => bool, 'reason' => string|null, 'priority' => 'baja'|'media'|'alta'|'critica', 'source' => 'gemini'|'heuristic']
-    private function aiAnalyzeTicketText($asunto, $descripcion) {
-        $prompt = "Eres un clasificador para tickets de soporte institucional.\n" .
-            "Analiza el asunto y descripción. Responde SOLO JSON con esta forma exacta:\n" .
-            "{\"blocked\": boolean, \"reason\": string, \"priority\": \"baja|media|alta|critica\"}\n" .
-            "Reglas:\n" .
-            "1) blocked=true si hay insultos, trolleo, spam, pruebas falsas o contenido ofensivo.\n" .
-            "2) Si blocked=true, reason debe ser breve y en español para el usuario.\n" .
-            "3) Si blocked=false, reason debe ser cadena vacía.\n" .
-            "4) Prioridad por urgencia/impacto real. Usa 'critica' solo si hay afectación severa o riesgo.\n" .
-            "Asunto: " . $asunto . "\n" .
-            "Descripcion: " . $descripcion;
-
-        $ai = Gemini::generateJson($prompt, 0.15);
-        if ($ai['ok'] && is_array($ai['data'])) {
-            $blocked = !empty($ai['data']['blocked']);
-            $reason = trim((string)($ai['data']['reason'] ?? ''));
-            $priority = strtolower(trim((string)($ai['data']['priority'] ?? 'media')));
-            if (!in_array($priority, ['baja', 'media', 'alta', 'critica'], true)) {
-                $priority = 'media';
-            }
-            return [
-                'blocked' => $blocked,
-                'reason' => $blocked ? ($reason !== '' ? $reason : 'Contenido no permitido.') : null,
-                'priority' => $priority,
-                'source' => 'gemini'
-            ];
-        }
-
-        return $this->heuristicAnalyzeTicketText($asunto, $descripcion);
+    private function containsInappropriateContent($text) {
+        return ContentFilter::findBlockedTerm($text);
     }
 
     // esta es la funcion para registrar un nuevo ticket
@@ -161,7 +38,7 @@ class TicketController {
             'asunto' => $_POST['asunto'] ?? $input['asunto'] ?? '',
             'descripcion' => $_POST['descripcion'] ?? $input['descripcion'] ?? '',
             'ubicacion' => $_POST['ubicacion'] ?? $input['ubicacion'] ?? '',
-            'prioridad' => null,
+            'prioridad' => $_POST['prioridad'] ?? $input['prioridad'] ?? '',
             'foto_url' => $fotoUrl,
             'estado' => 'abierto'
         ];
@@ -169,19 +46,20 @@ class TicketController {
         if (empty($data['asunto']) || empty($data['descripcion']) || empty($data['ubicacion'])) {
             jsonResponse(400, false, 'Asunto, descripción y ubicación son requeridos.');
         }
-
-        $analysis = $this->aiAnalyzeTicketText($data['asunto'], $data['descripcion']);
-        if (!empty($analysis['blocked'])) {
-            jsonResponse(422, false, $analysis['reason'] ?? 'Contenido no permitido.');
+        if (!in_array($data['prioridad'], ['baja', 'media', 'alta', 'critica'], true)) {
+            jsonResponse(422, false, 'Debes seleccionar una prioridad válida antes de crear el ticket.');
         }
-        $data['prioridad'] = $analysis['priority'] ?? 'media';
+
+        $blockedTerm = $this->containsInappropriateContent($data['asunto'] . ' ' . $data['descripcion']);
+        if ($blockedTerm) {
+            jsonResponse(422, false, 'Contenido inapropiado detectado. El ticket no puede enviarse.');
+        }
 
         $response = Supabase::request('/rest/v1/tickets', 'POST', $data, $_SESSION['access_token']);
 
         if ($response['status'] == 201) {
             jsonResponse(201, true, 'Ticket creado exitosamente', [
-                'prioridad' => $data['prioridad'],
-                'ai_source' => $analysis['source'] ?? 'unknown'
+                'prioridad' => $data['prioridad']
             ]);
         }
 
@@ -200,12 +78,9 @@ class TicketController {
     public function recentTickets() {
         $token = $_SESSION['access_token'];
         $limit = 7;
-        if ($this->isAdmin()) {
-            $response = Supabase::request("/rest/v1/tickets?select=id,asunto,email,created_at,prioridad,estado&order=created_at.desc&limit=$limit", 'GET', null, $token);
-        } else {
-            $userId = $_SESSION['id'];
-            $response = Supabase::request("/rest/v1/tickets?select=id,asunto,email,created_at,prioridad,estado&user_id=eq.$userId&order=created_at.desc&limit=$limit", 'GET', null, $token);
-        }
+        // Todos ven actividad reciente en formato marquee.
+        // El control de acceso a detalle se mantiene en ticket_detalle + UI.
+        $response = Supabase::request("/rest/v1/tickets?select=id,user_id,asunto,email,created_at,prioridad,estado&order=created_at.desc&limit=$limit", 'GET', null, $token);
         $tickets = ($response['status'] == 200) ? ($response['data'] ?? []) : [];
         jsonResponse(200, true, 'Tickets recientes', $tickets);
     }
@@ -241,51 +116,7 @@ class TicketController {
         $endpoint = "/rest/v1/base_conocimientos?select=id,titulo,solucion,url&activo=eq.true&or=(titulo.ilike.*$encoded*,asunto_match.ilike.*$encoded*)&limit=6";
         $response = Supabase::request($endpoint, 'GET', null, $token);
         $rows = ($response['status'] == 200) ? ($response['data'] ?? []) : [];
-        if (count($rows) > 1) {
-            $rows = $this->rerankFaqWithGemini($q, $rows);
-        }
         jsonResponse(200, true, 'Sugerencias', $rows);
-    }
-
-    private function rerankFaqWithGemini($query, $rows) {
-        $items = [];
-        foreach ($rows as $r) {
-            $items[] = [
-                'id' => $r['id'],
-                'titulo' => $r['titulo'] ?? '',
-                'solucion' => mb_substr((string)($r['solucion'] ?? ''), 0, 240, 'UTF-8')
-            ];
-        }
-
-        $prompt = "Eres un motor de ranking para FAQ de soporte.\n" .
-            "Consulta del usuario: " . $query . "\n" .
-            "Candidatos JSON: " . json_encode($items, JSON_UNESCAPED_UNICODE) . "\n" .
-            "Devuelve SOLO JSON con este formato: {\"ids\": [id1, id2, ...]} ordenados por relevancia descendente.";
-
-        $ai = Gemini::generateJson($prompt, 0.1);
-        if (!$ai['ok'] || !is_array($ai['data']) || !isset($ai['data']['ids']) || !is_array($ai['data']['ids'])) {
-            return $rows;
-        }
-
-        $order = array_map('strval', $ai['data']['ids']);
-        $map = [];
-        foreach ($rows as $row) {
-            $map[(string)$row['id']] = $row;
-        }
-
-        $ranked = [];
-        foreach ($order as $id) {
-            if (isset($map[$id])) {
-                $ranked[] = $map[$id];
-                unset($map[$id]);
-            }
-        }
-
-        foreach ($map as $left) {
-            $ranked[] = $left;
-        }
-
-        return array_slice($ranked, 0, 6);
     }
 
     private function assertTicketAccess($ticketId) {
@@ -333,6 +164,9 @@ class TicketController {
         }
         if (mb_strlen($mensaje, 'UTF-8') > 2000) {
             jsonResponse(400, false, 'Mensaje demasiado largo.');
+        }
+        if ($this->containsInappropriateContent($mensaje)) {
+            jsonResponse(422, false, 'Contenido inapropiado detectado. El mensaje no puede enviarse.');
         }
 
         $this->assertTicketAccess($ticketId);

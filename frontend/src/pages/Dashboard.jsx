@@ -28,7 +28,7 @@ const avatarFor = (email) => {
   return `https://avatar.vercel.sh/${safe}`;
 };
 
-const ReportCard = ({ email, asunto, created_at, prioridad, estado, id }) => {
+const ReportCard = ({ email, asunto, created_at, prioridad, estado, id, canOpen }) => {
   const username = email ? `@${email.split('@')[0]}` : '@usuario';
   const userLabel = email ? email.split('@')[0] : 'Usuario';
   return (
@@ -66,12 +66,16 @@ const ReportCard = ({ email, asunto, created_at, prioridad, estado, id }) => {
         </div>
       </div>
       <div className="mt-3">
-        <Link
-          to={`/tickets/${id}`}
-          className="text-[10px] font-extrabold text-[#003366] dark:text-[#ffcc00] underline underline-offset-4"
-        >
-          Abrir detalle
-        </Link>
+        {canOpen ? (
+          <Link
+            to={`/tickets/${id}`}
+            className="text-[10px] font-extrabold text-[#003366] dark:text-[#ffcc00] underline underline-offset-4"
+          >
+            Abrir detalle
+          </Link>
+        ) : (
+          <span className="text-[10px] font-semibold text-gray-400">Solo vista pública</span>
+        )}
       </div>
     </figure>
   );
@@ -148,12 +152,20 @@ const Dashboard = () => {
             <>
               <Marquee pauseOnHover className="[--duration:40s] [--gap:2rem]">
                 {firstRow.map((t) => (
-                  <ReportCard key={t.id} {...t} />
+                  <ReportCard
+                    key={t.id}
+                    {...t}
+                    canOpen={user?.rol === 'admin' || t.user_id === user?.id}
+                  />
                 ))}
               </Marquee>
               <Marquee reverse pauseOnHover className="[--duration:45s] [--gap:2rem]">
                 {secondRow.map((t) => (
-                  <ReportCard key={t.id} {...t} />
+                  <ReportCard
+                    key={t.id}
+                    {...t}
+                    canOpen={user?.rol === 'admin' || t.user_id === user?.id}
+                  />
                 ))}
               </Marquee>
 
@@ -168,4 +180,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-

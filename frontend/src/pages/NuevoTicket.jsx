@@ -8,7 +8,6 @@ const NuevoTicket = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
   const [faqLoading, setFaqLoading] = useState(false);
   const [faq, setFaq] = useState([]);
   const [faqOpenId, setFaqOpenId] = useState(null);
@@ -17,7 +16,7 @@ const NuevoTicket = () => {
     asunto: '',
     descripcion: '',
     ubicacion: '',
-    prioridad: 'baja',
+    prioridad: '',
   });
   const [foto, setFoto] = useState(null);
 
@@ -35,7 +34,6 @@ const NuevoTicket = () => {
 
   useEffect(() => {
     let ignore = false;
-
     if (asuntoQuery.length < 3) {
       setFaq([]);
       setFaqOpenId(null);
@@ -68,26 +66,27 @@ const NuevoTicket = () => {
     setError('');
 
     try {
+      if (!formData.prioridad) {
+        setError('Debes seleccionar una prioridad antes de crear el ticket.');
+        setLoading(false);
+        return;
+      }
+
       const data = new FormData();
       data.append('asunto', formData.asunto);
       data.append('descripcion', formData.descripcion);
       data.append('ubicacion', formData.ubicacion);
       data.append('prioridad', formData.prioridad);
-      if (foto) {
-        data.append('foto', foto);
-      }
+      if (foto) data.append('foto', foto);
 
-      const resp = await apiFetch('guardar_ticket', {
-        method: 'POST',
-        body: data,
-      });
+      const resp = await apiFetch('guardar_ticket', { method: 'POST', body: data });
       if (resp.success) {
         navigate('/mis-tickets');
       } else {
-        setError(resp.message);
+        setError(resp.message || 'No se pudo crear el ticket.');
       }
     } catch {
-      setError('Error de conexión al guardar el ticket.');
+      setError('Error de conexion al guardar el ticket.');
     } finally {
       setLoading(false);
     }
@@ -96,7 +95,7 @@ const NuevoTicket = () => {
   return (
     <div className="page-container animate-fade">
       <h1 className="page-title">Crear Nuevo Ticket</h1>
-      <p className="page-subtitle">Describe tu inconveniente y un administrador lo atenderá a la brevedad.</p>
+      <p className="page-subtitle">Describe tu inconveniente y un administrador lo atendera a la brevedad.</p>
 
       <div className="card form-card">
         {error && <div className="alert-error">{error}</div>}
@@ -114,13 +113,13 @@ const NuevoTicket = () => {
 
             <div className="mt-3">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Sugerencias automáticas</p>
-                {faqLoading && <span className="text-xs text-gray-400">Buscando…</span>}
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Sugerencias automaticas</p>
+                {faqLoading && <span className="text-xs text-gray-400">Buscando...</span>}
               </div>
 
               {asuntoQuery.length >= 3 && faq.length === 0 && !faqLoading && (
                 <p className="text-xs text-gray-400 mt-2 italic">
-                  No hay coincidencias. Si es un incidente real, continúa con el ticket.
+                  No hay coincidencias. Si es un incidente real, continua con el ticket.
                 </p>
               )}
 
@@ -162,7 +161,7 @@ const NuevoTicket = () => {
                                     rel="noopener noreferrer"
                                     className="inline-block mt-2 text-xs font-bold text-[#003366] dark:text-[#ffcc00] underline underline-offset-4"
                                   >
-                                    Abrir guía
+                                    Abrir guia
                                   </a>
                                 )}
                               </div>
@@ -178,20 +177,20 @@ const NuevoTicket = () => {
           </div>
 
           <div className="form-group">
-            <label>Descripción Detallada</label>
+            <label>Descripcion Detallada</label>
             <textarea
               name="descripcion"
               value={formData.descripcion}
               onChange={handleChange}
               rows="4"
-              placeholder="Explica qué sucede, equipos afectados, etc."
+              placeholder="Explica que sucede, equipos afectados, etc."
               required
             />
           </div>
 
           <div className="form-row">
             <div className="form-group half">
-              <label>Ubicación (Edificio/Aula)</label>
+              <label>Ubicacion (Edificio/Aula)</label>
               <input
                 name="ubicacion"
                 value={formData.ubicacion}
@@ -203,11 +202,13 @@ const NuevoTicket = () => {
             <div className="form-group half">
               <label>Nivel de Prioridad</label>
               <select name="prioridad" value={formData.prioridad} onChange={handleChange} required>
-                <option value="baja">🟢 Baja (No urgente)</option>
-                <option value="media">🟡 Media (Requiere atención)</option>
-                <option value="alta">🔴 Alta (Crítico / Bloqueante)</option>
+                <option value="">Seleccionar prioridad</option>
+                <option value="baja">Baja (No urgente)</option>
+                <option value="media">Media (Requiere atencion)</option>
+                <option value="alta">Alta (Critico / Bloqueante)</option>
+                <option value="critica">Critica (Impacto severo)</option>
               </select>
-              <p className="text-[11px] text-gray-400 mt-2">Nota: la prioridad final se calcula automáticamente según la urgencia descrita.</p>
+              <p className="text-[11px] text-gray-400 mt-2">Debes seleccionar la prioridad antes de enviar.</p>
             </div>
           </div>
 
