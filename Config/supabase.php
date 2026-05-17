@@ -5,6 +5,8 @@
 define('SUPABASE_URL', 'https://qhnwltdwxfewpolexydl.supabase.co');
 // aqui realizamos la definicion del token de acceso
 define('SUPABASE_KEY', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFobndsdGR3eGZld3BvbGV4eWRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MDYwNzUsImV4cCI6MjA4NzM4MjA3NX0.yOJEQy8V82cKxOe8Ho2FxLFlaDg-5Z1OoBSWV1UxxBg');
+define('GEMINI_API_KEY', getenv('GEMINI_API_KEY') ?: 'AIzaSyANjXvp3M2BFvtgzF7zgRVElBD1dWQsxkA');
+define('GEMINI_MODEL', getenv('GEMINI_MODEL') ?: 'gemini-1.5-flash');
 
 // esta es la clase para manejar la api
 class Supabase {
@@ -98,5 +100,56 @@ class Supabase {
             'status' => $status,
             'data' => json_decode($response, true)
         ];
+    }
+}
+
+class Gemini {
+    public static function generateJson($prompt, $temperature = 0.2) {
+        if (!defined('GEMINI_API_KEY') || empty(GEMINI_API_KEY)) {
+            return ['ok' => false, 'error' => 'GEMINI_API_KEY no configurada', 'data' => null];
+        }
+
+        $url = 'https://generativelanguage.googleapis.com/v1beta/models/' . GEMINI_MODEL . ':generateContent?key=' . GEMINI_API_KEY;
+
+        $payload = [
+            'contents' => [[
+                'role' => 'user',
+                'parts' => [['text' => $prompt]]
+            ]],
+            'generationConfig' => [
+                'temperature' => $temperature,
+                'responseMimeType' => 'application/json'
+            ]
+        ];
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+        curl_setopt($ch, CURLOPT_TIMEOUT, 18);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+        $raw = curl_exec($ch);
+        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($status < 200 || $status >= 300 || !$raw) {
+            return ['ok' => false, 'error' => 'Error HTTP Gemini: ' . $status, 'data' => null];
+        }
+
+        $decoded = json_decode($raw, true);
+        $text = $decoded['candidates'][0]['content']['parts'][0]['text'] ?? null;
+        if (!$text) {
+            return ['ok' => false, 'error' => 'Respuesta vacía de Gemini', 'data' => $decoded];
+        }
+
+        $json = json_decode($text, true);
+        if (!is_array($json)) {
+            return ['ok' => false, 'error' => 'Gemini no devolvió JSON válido', 'data' => $text];
+        }
+
+        return ['ok' => true, 'error' => null, 'data' => $json];
     }
 }

@@ -13,9 +13,8 @@ class TicketController {
         return $text;
     }
 
-    // Simulación lógica de "IA": moderación + prioridad basada en texto.
-    // Retorna: ['blocked' => bool, 'reason' => string|null, 'priority' => 'baja'|'media'|'alta'|'critica']
-    private function aiAnalyzeTicketText($asunto, $descripcion) {
+    // Fallback local si Gemini falla
+    private function heuristicAnalyzeTicketText($asunto, $descripcion) {
         $text = $this->normalizeText($asunto . ' ' . $descripcion);
 
         $banned = [
@@ -98,7 +97,40 @@ class TicketController {
             }
         }
 
-        return ['blocked' => false, 'reason' => null, 'priority' => $priority];
+        return ['blocked' => false, 'reason' => null, 'priority' => $priority, 'source' => 'heuristic'];
+    }
+
+    // IA real con Gemini + fallback heurístico
+    // Retorna: ['blocked' => bool, 'reason' => string|null, 'priority' => 'baja'|'media'|'alta'|'critica', 'source' => 'gemini'|'heuristic']
+    private function aiAnalyzeTicketText($asunto, $descripcion) {
+        $prompt = "Eres un clasificador para tickets de soporte institucional.\n" .
+            "Analiza el asunto y descripción. Responde SOLO JSON con esta forma exacta:\n" .
+            "{\"blocked\": boolean, \"reason\": string, \"priority\": \"baja|media|alta|critica\"}\n" .
+            "Reglas:\n" .
+            "1) blocked=true si hay insultos, trolleo, spam, pruebas falsas o contenido ofensivo.\n" .
+            "2) Si blocked=true, reason debe ser breve y en español para el usuario.\n" .
+            "3) Si blocked=false, reason debe ser cadena vacía.\n" .
+            "4) Prioridad por urgencia/impacto real. Usa 'critica' solo si hay afectación severa o riesgo.\n" .
+            "Asunto: " . $asunto . "\n" .
+            "Descripcion: " . $descripcion;
+
+        $ai = Gemini::generateJson($prompt, 0.15);
+        if ($ai['ok'] && is_array($ai['data'])) {
+            $blocked = !empty($ai['data']['blocked']);
+            $reason = trim((string)($ai['data']['reason'] ?? ''));
+            $priority = strtolower(trim((string)($ai['data']['priority'] ?? 'media')));
+            if (!in_array($priority, ['baja', 'media', 'alta', 'critica'], true)) {
+                $priority = 'media';
+            }
+            return [
+                'blocked' => $blocked,
+                'reason' => $blocked ? ($reason !== '' ? $reason : 'Contenido no permitido.') : null,
+                'priority' => $priority,
+                'source' => 'gemini'
+            ];
+        }
+
+        return $this->heuristicAnalyzeTicketText($asunto, $descripcion);
     }
 
     // esta es la funcion para registrar un nuevo ticket
@@ -148,7 +180,8 @@ class TicketController {
 
         if ($response['status'] == 201) {
             jsonResponse(201, true, 'Ticket creado exitosamente', [
-                'prioridad' => $data['prioridad']
+                'prioridad' => $data['prioridad'],
+                'ai_source' => $analysis['source'] ?? 'unknown'
             ]);
         }
 
@@ -208,7 +241,51 @@ class TicketController {
         $endpoint = "/rest/v1/base_conocimientos?select=id,titulo,solucion,url&activo=eq.true&or=(titulo.ilike.*$encoded*,asunto_match.ilike.*$encoded*)&limit=6";
         $response = Supabase::request($endpoint, 'GET', null, $token);
         $rows = ($response['status'] == 200) ? ($response['data'] ?? []) : [];
+        if (count($rows) > 1) {
+            $rows = $this->rerankFaqWithGemini($q, $rows);
+        }
         jsonResponse(200, true, 'Sugerencias', $rows);
+    }
+
+    private function rerankFaqWithGemini($query, $rows) {
+        $items = [];
+        foreach ($rows as $r) {
+            $items[] = [
+                'id' => $r['id'],
+                'titulo' => $r['titulo'] ?? '',
+                'solucion' => mb_substr((string)($r['solucion'] ?? ''), 0, 240, 'UTF-8')
+            ];
+        }
+
+        $prompt = "Eres un motor de ranking para FAQ de soporte.\n" .
+            "Consulta del usuario: " . $query . "\n" .
+            "Candidatos JSON: " . json_encode($items, JSON_UNESCAPED_UNICODE) . "\n" .
+            "Devuelve SOLO JSON con este formato: {\"ids\": [id1, id2, ...]} ordenados por relevancia descendente.";
+
+        $ai = Gemini::generateJson($prompt, 0.1);
+        if (!$ai['ok'] || !is_array($ai['data']) || !isset($ai['data']['ids']) || !is_array($ai['data']['ids'])) {
+            return $rows;
+        }
+
+        $order = array_map('strval', $ai['data']['ids']);
+        $map = [];
+        foreach ($rows as $row) {
+            $map[(string)$row['id']] = $row;
+        }
+
+        $ranked = [];
+        foreach ($order as $id) {
+            if (isset($map[$id])) {
+                $ranked[] = $map[$id];
+                unset($map[$id]);
+            }
+        }
+
+        foreach ($map as $left) {
+            $ranked[] = $left;
+        }
+
+        return array_slice($ranked, 0, 6);
     }
 
     private function assertTicketAccess($ticketId) {
@@ -405,4 +482,3 @@ class TicketController {
         jsonResponse(405, false, 'Método no permitido.');
     }
 }
-
