@@ -24,6 +24,7 @@ const PanelSoporte = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [updatingId, setUpdatingId] = useState(null);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     fetchPanel();
@@ -65,6 +66,17 @@ const PanelSoporte = () => {
 
   const estadoData = useMemo(() => data?.charts?.estado || [], [data]);
   const catData = useMemo(() => data?.charts?.categorias || [], [data]);
+  const filteredTickets = useMemo(() => {
+    const q = (search || '').trim().toLowerCase();
+    if (!q) return data.tickets || [];
+
+    return (data.tickets || []).filter((t) => {
+      const idMatch = String(t.id || '').includes(q);
+      const emailMatch = String(t.email || '').toLowerCase().includes(q);
+      const asuntoMatch = String(t.asunto || '').toLowerCase().includes(q);
+      return idMatch || emailMatch || asuntoMatch;
+    });
+  }, [data.tickets, search]);
 
   return (
     <div className="page-container admin-panel animate-fade">
@@ -152,7 +164,25 @@ const PanelSoporte = () => {
           </div>
 
           <div className="card admin-table-container">
-            <h3 style={{ marginBottom: '1rem' }}>Últimos 50 Tickets</h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.8rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+              <h3>Últimos 50 Tickets</h3>
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Filtrar por usuario (email), asunto o #ID"
+                style={{
+                  minWidth: '280px',
+                  maxWidth: '420px',
+                  width: '100%',
+                  border: '1px solid var(--border-color)',
+                  background: 'var(--bg-card)',
+                  color: 'var(--text-dark)',
+                  borderRadius: '10px',
+                  padding: '0.55rem 0.75rem',
+                  outline: 'none'
+                }}
+              />
+            </div>
             <div className="table-responsive">
               <table className="admin-table">
                 <thead>
@@ -167,7 +197,7 @@ const PanelSoporte = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.tickets.map((t) => (
+                  {filteredTickets.map((t) => (
                     <tr key={t.id}>
                       <td>#{t.id}</td>
                       <td>{new Date(t.created_at).toLocaleDateString()}</td>
@@ -212,6 +242,13 @@ const PanelSoporte = () => {
                       </td>
                     </tr>
                   ))}
+                  {filteredTickets.length === 0 && (
+                    <tr>
+                      <td colSpan="7" style={{ textAlign: 'center', color: 'var(--secondary-color)' }}>
+                        No hay tickets que coincidan con el filtro.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -223,4 +260,3 @@ const PanelSoporte = () => {
 };
 
 export default PanelSoporte;
-

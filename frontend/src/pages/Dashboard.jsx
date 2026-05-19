@@ -73,9 +73,7 @@ const ReportCard = ({ email, asunto, created_at, prioridad, estado, id, canOpen 
           >
             Abrir detalle
           </Link>
-        ) : (
-          <span className="text-[10px] font-semibold text-gray-400">Solo vista pública</span>
-        )}
+        ) : null}
       </div>
     </figure>
   );
@@ -155,7 +153,7 @@ const Dashboard = () => {
                   <ReportCard
                     key={t.id}
                     {...t}
-                    canOpen={user?.rol === 'admin' || t.user_id === user?.id}
+                    canOpen={user?.rol === 'admin'}
                   />
                 ))}
               </Marquee>
@@ -164,7 +162,7 @@ const Dashboard = () => {
                   <ReportCard
                     key={t.id}
                     {...t}
-                    canOpen={user?.rol === 'admin' || t.user_id === user?.id}
+                    canOpen={user?.rol === 'admin'}
                   />
                 ))}
               </Marquee>

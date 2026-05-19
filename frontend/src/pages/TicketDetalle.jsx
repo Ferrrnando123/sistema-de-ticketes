@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { apiFetch } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { BlurFade } from '../components/magicui/blur-fade';
+import { hasInappropriateContent } from '../lib/contentFilter';
 import './TicketDetalle.css';
 
 const TicketDetalle = () => {
@@ -17,6 +18,7 @@ const TicketDetalle = () => {
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
   const [text, setText] = useState('');
+  const [chatError, setChatError] = useState('');
 
   const bodyRef = useRef(null);
 
@@ -58,7 +60,6 @@ const TicketDetalle = () => {
     };
   }, [ticketId]);
 
-  // Polling ligero para simular "tiempo real"
   useEffect(() => {
     if (!ticketId) return;
     const t = setInterval(() => {
@@ -74,11 +75,17 @@ const TicketDetalle = () => {
   const send = async () => {
     const message = text.trim();
     if (!message) return;
+    if (hasInappropriateContent(message)) {
+      setChatError('Contenido inapropiado detectado. El mensaje no puede enviarse.');
+      return;
+    }
+
+    setChatError('');
     setSending(true);
     try {
       const resp = await apiFetch('mensajes_ticket_enviar', {
         method: 'POST',
-        body: { ticket_id: ticketId, mensaje: message },
+        body: { ticket_id: ticketId, mensaje: message }
       });
       if (!resp.success) {
         throw new Error(resp.message || 'Error enviando mensaje');
@@ -86,7 +93,7 @@ const TicketDetalle = () => {
       setText('');
       await fetchMsgs();
     } catch (e) {
-      alert(e?.message || 'Error de red enviando mensaje.');
+      setChatError(e?.message || 'Error de red enviando mensaje.');
     } finally {
       setSending(false);
     }
@@ -144,7 +151,6 @@ const TicketDetalle = () => {
 
       <div className="card" style={{ padding: '1.25rem' }}>
         <p className="text-gray-600 dark:text-gray-200 leading-relaxed">{ticket?.descripcion}</p>
-
         <div className="ticket-detail-meta">
           <div className="meta-pill">
             <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Estado</div>
@@ -155,7 +161,7 @@ const TicketDetalle = () => {
             <div className="mt-1 font-extrabold text-[#003366] dark:text-[#ffcc00]">{ticket?.prioridad}</div>
           </div>
           <div className="meta-pill">
-            <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Ubicación</div>
+            <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Ubicacion</div>
             <div className="mt-1 font-bold text-gray-700 dark:text-gray-200">{ticket?.ubicacion}</div>
           </div>
           <div className="meta-pill">
@@ -163,14 +169,6 @@ const TicketDetalle = () => {
             <div className="mt-1 font-bold text-gray-700 dark:text-gray-200">{formatDate(ticket?.created_at)}</div>
           </div>
         </div>
-
-        {ticket?.foto_url && (
-          <div className="mt-4">
-            <a href={ticket.foto_url} target="_blank" rel="noopener noreferrer" className="btn btn-outline">
-              Ver evidencia
-            </a>
-          </div>
-        )}
       </div>
 
       <div className="chat-shell">
@@ -178,7 +176,7 @@ const TicketDetalle = () => {
           <div>
             <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Chat del ticket</div>
             <div className="text-sm text-gray-600 dark:text-gray-200 mt-1">
-              Conversación entre {user?.rol === 'admin' ? 'soporte' : 'usuario'} y soporte.
+              Conversacion entre {user?.rol === 'admin' ? 'soporte' : 'usuario'} y soporte.
             </div>
           </div>
           <button className="btn btn-outline" onClick={() => fetchMsgs()} disabled={sending}>
@@ -188,14 +186,14 @@ const TicketDetalle = () => {
 
         <div className="chat-body" ref={bodyRef}>
           {msgs.length === 0 ? (
-            <div className="text-sm text-gray-500 italic">Aún no hay mensajes. Escribe para iniciar la conversación.</div>
+            <div className="text-sm text-gray-500 italic">Aun no hay mensajes. Escribe para iniciar la conversacion.</div>
           ) : (
             msgs.map((m) => (
               <BlurFade key={m.id} delay={0.02} yOffset={6}>
                 <div className={bubbleClass(m)}>
                   <div style={{ whiteSpace: 'pre-wrap' }}>{m.mensaje}</div>
                   <div className="bubble-meta">
-                    {m.autor_rol === 'admin' ? 'Soporte' : 'Tú'} · {formatDate(m.created_at)}
+                    {m.autor_rol === 'admin' ? 'Soporte' : 'Tu'} · {formatDate(m.created_at)}
                   </div>
                 </div>
               </BlurFade>
@@ -206,8 +204,14 @@ const TicketDetalle = () => {
         <div className="chat-input">
           <input
             value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="Escribe un mensaje…"
+            onChange={(e) => {
+              const value = e.target.value;
+              setText(value);
+              if (chatError && !hasInappropriateContent(value)) {
+                setChatError('');
+              }
+            }}
+            placeholder="Escribe un mensaje..."
             disabled={sending}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
@@ -217,9 +221,10 @@ const TicketDetalle = () => {
             }}
           />
           <button className="btn btn-primary" type="button" onClick={send} disabled={sending}>
-            {sending ? 'Enviando…' : 'Enviar'}
+            {sending ? 'Enviando...' : 'Enviar'}
           </button>
         </div>
+        {chatError && <div className="alert-error" style={{ margin: '0.8rem' }}>{chatError}</div>}
       </div>
     </div>
   );

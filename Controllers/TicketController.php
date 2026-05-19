@@ -46,7 +46,11 @@ class TicketController {
         if (empty($data['asunto']) || empty($data['descripcion']) || empty($data['ubicacion'])) {
             jsonResponse(400, false, 'Asunto, descripción y ubicación son requeridos.');
         }
-        if (!in_array($data['prioridad'], ['baja', 'media', 'alta', 'critica'], true)) {
+        // Compatibilidad con esquemas donde prioridad aún no acepta "critica".
+        if ($data['prioridad'] === 'critica') {
+            $data['prioridad'] = 'alta';
+        }
+        if (!in_array($data['prioridad'], ['baja', 'media', 'alta'], true)) {
             jsonResponse(422, false, 'Debes seleccionar una prioridad válida antes de crear el ticket.');
         }
 
@@ -63,7 +67,14 @@ class TicketController {
             ]);
         }
 
-        jsonResponse(500, false, 'Error al crear el ticket', $response['data'] ?? null);
+        $rawError = $response['data']['message'] ?? $response['data']['hint'] ?? $response['data']['details'] ?? null;
+        $safeMessage = $rawError ? ('Error al crear el ticket: ' . $rawError) : 'Error al crear el ticket';
+        @file_put_contents(
+            dirname(__DIR__) . DIRECTORY_SEPARATOR . 'debug_log.txt',
+            '[' . date('Y-m-d H:i:s') . '] [guardar_ticket_error] ' . json_encode($response, JSON_UNESCAPED_UNICODE) . PHP_EOL,
+            FILE_APPEND
+        );
+        jsonResponse(500, false, $safeMessage, $response['data'] ?? null);
     }
 
     // esta es la funcion para listar los tickets que ha enviado el usuario
@@ -76,12 +87,19 @@ class TicketController {
 
     // Endpoint para el carrusel de actividad reciente (últimos 7)
     public function recentTickets() {
-        $token = $_SESSION['access_token'];
         $limit = 7;
-        // Todos ven actividad reciente en formato marquee.
-        // El control de acceso a detalle se mantiene en ticket_detalle + UI.
-        $response = Supabase::request("/rest/v1/tickets?select=id,user_id,asunto,email,created_at,prioridad,estado&order=created_at.desc&limit=$limit", 'GET', null, $token);
+
+        // Feed global para incentivar uso: intenta usar service_role (bypassa RLS).
+        $response = Supabase::requestAsService("/rest/v1/tickets?select=id,user_id,asunto,email,created_at,prioridad,estado&order=created_at.desc&limit=$limit", 'GET');
+
+        // Fallback: si no hay service_role, se mantiene el alcance del usuario por RLS.
+        if (($response['status'] ?? 0) !== 200) {
+            $token = $_SESSION['access_token'];
+            $response = Supabase::request("/rest/v1/tickets?select=id,user_id,asunto,email,created_at,prioridad,estado&order=created_at.desc&limit=$limit", 'GET', null, $token);
+        }
+
         $tickets = ($response['status'] == 200) ? ($response['data'] ?? []) : [];
+
         jsonResponse(200, true, 'Tickets recientes', $tickets);
     }
 

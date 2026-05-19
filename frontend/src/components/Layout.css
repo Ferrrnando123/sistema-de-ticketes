@@ -94,6 +94,26 @@
   align-items: center;
   gap: 0.75rem;
 }
+.user-info-row {
+  justify-content: space-between;
+  width: 100%;
+  min-width: 0;
+}
+
+.user-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.user-right-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
 
 .avatar {
   background-color: var(--primary-color);
@@ -187,11 +207,11 @@
 }
 
 .notif-panel {
-  position: absolute;
-  bottom: 44px;
-  right: 0;
-  width: 290px;
-  max-width: 78vw;
+  position: fixed;
+  left: 12px;
+  bottom: 84px;
+  width: min(248px, calc(100vw - 24px));
+  max-height: min(62vh, 420px);
   background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(14px);
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -199,6 +219,8 @@
   box-shadow: var(--shadow-md);
   overflow: hidden;
   z-index: 30;
+  display: flex;
+  flex-direction: column;
 }
 
 .notif-title {
@@ -233,6 +255,9 @@
 .notif-list {
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  max-height: 330px;
 }
 
 .notif-item {
@@ -261,6 +286,8 @@
   font-size: 12px;
   color: rgba(100, 116, 139, 1);
   margin-top: 2px;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .main-content {
@@ -296,5 +323,14 @@
   }
   .mobile-header {
     display: block;
+  }
+
+  .notif-panel {
+    position: fixed;
+    right: 12px;
+    left: auto;
+    bottom: 12px;
+    width: min(360px, calc(100vw - 24px));
+    max-height: min(70vh, 460px);
   }
 }

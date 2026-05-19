@@ -4,7 +4,7 @@ import { Bell, LogOut, Home, Ticket, HelpCircle, LayoutDashboard } from 'lucide-
 import { AnimatedThemeToggler } from './magicui/animated-theme-toggler';
 import { BlurFade } from './magicui/blur-fade';
 import { apiFetch } from '../services/api';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import './Layout.css';
 
 const Layout = () => {
@@ -12,6 +12,7 @@ const Layout = () => {
   const navigate = useNavigate();
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifs, setNotifs] = useState([]);
+  const notifWrapRef = useRef(null);
   const unreadCount = useMemo(() => notifs.filter(n => !n.leida).length, [notifs]);
 
   const handleLogout = async () => {
@@ -33,6 +34,18 @@ const Layout = () => {
     const t = setInterval(() => loadNotifs(), 25000);
     return () => clearInterval(t);
   }, []);
+
+  useEffect(() => {
+    const onClickOutside = (event) => {
+      if (!notifOpen) return;
+      if (notifWrapRef.current && !notifWrapRef.current.contains(event.target)) {
+        setNotifOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', onClickOutside);
+    return () => document.removeEventListener('mousedown', onClickOutside);
+  }, [notifOpen]);
 
   const markRead = async (id) => {
     try {
@@ -73,16 +86,16 @@ const Layout = () => {
         </nav>
         
         <div className="sidebar-footer">
-          <div className="user-info" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div className="user-info user-info-row">
+            <div className="user-main">
               <div className="avatar">{user?.nombre?.charAt(0).toUpperCase()}</div>
               <div className="user-details">
                 <strong>{user?.nombre}</strong>
                 <small>{user?.email}</small>
               </div>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div className="notif-wrap">
+            <div className="user-right-controls">
+              <div className="notif-wrap" ref={notifWrapRef}>
                 <button
                   type="button"
                   className="notif-btn"
@@ -110,7 +123,7 @@ const Layout = () => {
                         <div className="notif-empty">Sin notificaciones por ahora.</div>
                       ) : (
                         <div className="notif-list">
-                          {notifs.slice(0, 8).map((n) => (
+                          {notifs.map((n) => (
                             <button
                               key={n.id}
                               type="button"

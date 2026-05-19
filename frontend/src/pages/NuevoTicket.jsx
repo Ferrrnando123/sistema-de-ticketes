@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { apiFetch } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { BlurFade } from '../components/magicui/blur-fade';
+import { hasInappropriateContent } from '../lib/contentFilter';
 import './Forms.css';
 
 const NuevoTicket = () => {
@@ -71,7 +72,11 @@ const NuevoTicket = () => {
         setLoading(false);
         return;
       }
-
+      if (hasInappropriateContent(`${formData.asunto} ${formData.descripcion}`)) {
+        setError('Contenido inapropiado detectado. El ticket no puede enviarse.');
+        setLoading(false);
+        return;
+      }
       const data = new FormData();
       data.append('asunto', formData.asunto);
       data.append('descripcion', formData.descripcion);
@@ -237,4 +242,3 @@ const NuevoTicket = () => {
 };
 
 export default NuevoTicket;
-
