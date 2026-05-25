@@ -1,15 +1,24 @@
 <?php
 // index.php
-// Este archivo es requerido por Railway (Nixpacks) para detectar que es un proyecto PHP
-// y generar el plan de construcción correcto con Caddy + PHP-FPM.
-// También actúa como controlador frontal para las rutas de React Router.
+// Archivo requerido por Railway para detectar PHP.
+// Controlador frontal para React Router.
 
-// Si existe el archivo index.html (React compilado), lo servimos
-if (file_exists(__DIR__ . '/index.html')) {
+$rootIndex = __DIR__ . '/index.html';
+$distIndex = __DIR__ . '/frontend/dist/index.html';
+
+if (file_exists($rootIndex)) {
     header('Content-Type: text/html; charset=utf-8');
-    readfile(__DIR__ . '/index.html');
+    readfile($rootIndex);
+    exit;
+} elseif (file_exists($distIndex)) {
+    header('Content-Type: text/html; charset=utf-8');
+    readfile($distIndex);
     exit;
 }
 
-// Si no existe (por ejemplo, antes de compilar), delegamos a api.php
-require_once __DIR__ . '/api.php';
+// Si no se encuentra React, mostramos un error descriptivo para debuguear en Railway.
+http_response_code(500);
+echo "<h1>Error en el despliegue</h1>";
+echo "<p>No se encontró el build de React (index.html). Verifica que Railway esté ejecutando 'npm run build' en tu nixpacks.toml.</p>";
+exit;
+
