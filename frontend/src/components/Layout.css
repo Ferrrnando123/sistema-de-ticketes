@@ -214,8 +214,8 @@
   position: absolute;
   right: 0;
   bottom: calc(100% + 10px);
-  width: 256px;
-  max-width: calc(100vw - 24px);
+  width: 220px;
+  max-width: 220px;
   max-height: min(62vh, 420px);
   background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(14px);
@@ -403,7 +403,7 @@
     right: auto;
     transform: translateX(-50%);
     bottom: 16px;
-    width: min(360px, calc(100vw - 24px));
+    width: min(320px, calc(100vw - 24px));
     max-height: min(70vh, 460px);
   }
 }
