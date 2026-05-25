@@ -1,0 +1,16 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  
+  # Allow access to api.php directly
+  RewriteCond %{REQUEST_URI} ^/api\.php [NC]
+  RewriteRule ^ - [L]
+
+  # Allow access to existing files/folders (like JS/CSS assets in dist)
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Rewrite all other requests to index.html to let React Router handle them
+  RewriteRule ^ index.html [L]
+</IfModule>
