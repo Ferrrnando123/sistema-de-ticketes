@@ -86,13 +86,34 @@ const Dashboard = () => {
   useEffect(() => {
     (async () => {
       try {
-        const resp = await apiFetch('get_recent_tickets');
-        if (resp.success) setRecent(resp.data || []);
+        const [globalResp, ownResp] = await Promise.allSettled([
+          apiFetch('get_recent_tickets'),
+          user?.rol === 'admin' ? Promise.resolve(null) : apiFetch('mis-tickets'),
+        ]);
+
+        const globalTickets = globalResp.status === 'fulfilled' && globalResp.value?.success
+          ? (globalResp.value.data || [])
+          : [];
+
+        if (user?.rol === 'admin') {
+          setRecent(globalTickets);
+          return;
+        }
+
+        const ownTickets = ownResp.status === 'fulfilled' && ownResp.value?.success
+          ? (ownResp.value.data || [])
+          : [];
+
+        const merged = [...globalTickets, ...ownTickets].filter((ticket, index, array) => {
+          return array.findIndex((item) => item.id === ticket.id) === index;
+        });
+
+        setRecent(merged);
       } catch {
         setRecent([]);
       }
     })();
-  }, []);
+  }, [user?.rol]);
 
   const [firstRow, secondRow] = useMemo(() => {
     const list = recent.length ? recent : [];
