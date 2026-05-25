@@ -2,9 +2,8 @@ providers = ["php", "node"]
 
 [phases.build]
 cmds = [
-  "cd frontend && npm install && npm run build",
-  "chmod +x /app/start.sh"
+  "cd frontend && npm install && npm run build"
 ]
 
 [start]
-cmd = "/app/start.sh"
+cmd = "php -S 0.0.0.0:${PORT:-8080} router.php"

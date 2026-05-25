@@ -1,1 +1,1 @@
-web: php-fpm -D && caddy run --config /app/Caddyfile --adapter caddyfile
+web: php -S 0.0.0.0:${PORT:-8080} router.php
