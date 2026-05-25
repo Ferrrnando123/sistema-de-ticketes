@@ -2,7 +2,15 @@
 // Config/supabase.php
 
 $localSecrets = [];
+$productionSecrets = [];
+$productionSecretsPath = __DIR__ . DIRECTORY_SEPARATOR . 'secrets.php';
 $localSecretsPath = __DIR__ . DIRECTORY_SEPARATOR . 'secrets.local.php';
+if (file_exists($productionSecretsPath)) {
+    $loaded = require $productionSecretsPath;
+    if (is_array($loaded)) {
+        $productionSecrets = $loaded;
+    }
+}
 if (file_exists($localSecretsPath)) {
     $loaded = require $localSecretsPath;
     if (is_array($loaded)) {
@@ -17,16 +25,19 @@ define('SUPABASE_KEY', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 define(
     'SUPABASE_SERVICE_ROLE_KEY',
     getenv('SUPABASE_SERVICE_ROLE_KEY')
+        ?: ($productionSecrets['SUPABASE_SERVICE_ROLE_KEY'] ?? '')
         ?: ($localSecrets['SUPABASE_SERVICE_ROLE_KEY'] ?? '')
 );
 define(
     'GEMINI_API_KEY',
     getenv('GEMINI_API_KEY')
+        ?: ($productionSecrets['GEMINI_API_KEY'] ?? '')
         ?: ($localSecrets['GEMINI_API_KEY'] ?? '')
 );
 define(
     'GEMINI_MODEL',
     getenv('GEMINI_MODEL')
+        ?: ($productionSecrets['GEMINI_MODEL'] ?? '')
         ?: ($localSecrets['GEMINI_MODEL'] ?? 'gemini-2.5-flash')
 );
 

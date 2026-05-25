@@ -93,9 +93,7 @@ class TicketController {
         $response = Supabase::requestAsService("/rest/v1/tickets?select=id,user_id,asunto,email,created_at,prioridad,estado&order=created_at.desc&limit=$limit", 'GET');
 
         if (($response['status'] ?? 0) !== 200) {
-            // Fallback público: si la política de Supabase permite lectura anónima,
-            // seguimos mostrando el feed global sin degradar al feed del usuario.
-            $response = Supabase::request("/rest/v1/tickets?select=id,user_id,asunto,email,created_at,prioridad,estado&order=created_at.desc&limit=$limit", 'GET');
+            jsonResponse(503, false, 'No se pudo cargar el carrusel global. Verifica la variable SUPABASE_SERVICE_ROLE_KEY.');
         }
 
         $tickets = ($response['status'] == 200) ? ($response['data'] ?? []) : [];
