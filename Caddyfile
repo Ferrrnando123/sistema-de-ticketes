@@ -1,0 +1,17 @@
+:{$PORT:80} {
+    root * /app
+
+    # Ruta a la API PHP — se pasa a PHP-FPM
+    handle /api.php* {
+        php_fastcgi unix//run/php/php-fpm.sock {
+            root /app
+        }
+    }
+
+    # Para cualquier otra ruta, servir el frontend de React
+    handle {
+        root * /app/frontend/dist
+        try_files {path} /index.html
+        file_server
+    }
+}

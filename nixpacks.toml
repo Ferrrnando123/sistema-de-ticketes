@@ -1,4 +1,6 @@
 providers = ["php", "node"]
 
 [phases.build]
-cmds = ["bash build.sh"]
+cmds = [
+  "cd frontend && npm install && npm run build"
+]
