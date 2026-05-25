@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost/sistema-de-ticketes/index.php';
+const API_URL = import.meta.env.VITE_API_URL || '/api.php';
 
 export const apiFetch = async (action, options = {}) => {
   const url = `${API_URL}?action=${action}`;
