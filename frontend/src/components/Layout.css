@@ -207,10 +207,12 @@
 }
 
 .notif-panel {
-  position: fixed;
-  left: 12px;
-  bottom: 84px;
-  width: min(248px, calc(100vw - 24px));
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(100% + 10px);
+  width: 236px;
+  max-width: calc(100vw - 24px);
   max-height: min(62vh, 420px);
   background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(14px);
@@ -394,6 +396,7 @@
 
   .notif-panel {
     position: fixed;
+    transform: none;
     right: 12px;
     left: auto;
     bottom: 16px;
