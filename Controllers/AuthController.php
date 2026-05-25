@@ -39,12 +39,15 @@ class AuthController {
                 // aqui hacemos el cambio para mostrar el loader solo al loguear
                 $_SESSION['mostrar_loading'] = true;
 
+                session_write_close();
+
                 // aqui devolvemos los datos del usuario en JSON
                 jsonResponse(200, true, 'Login exitoso', [
                     'id' => $_SESSION['id'],
                     'email' => $_SESSION['email'],
                     'nombre' => $_SESSION['nombre'],
-                    'rol' => $_SESSION['rol']
+                    'rol' => $_SESSION['rol'],
+                    'access_token' => $_SESSION['access_token']
                 ]);
             } else {
                 // Error de login

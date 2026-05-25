@@ -25,6 +25,8 @@ session_set_cookie_params([
 ]);
 session_start();
 
+bootstrapSesionDesdeToken();
+
 $action = $_GET['action'] ?? 'login';
 
 // Función auxiliar para retornar respuestas JSON estandarizadas
@@ -163,7 +165,61 @@ switch ($action) {
 
 // Función auxiliar para validar que el usuario tenga sesión activa
 function validarSesion() {
+    bootstrapSesionDesdeToken();
     if (!isset($_SESSION['id'])) {
         jsonResponse(401, false, 'No autorizado. Por favor inicie sesión.');
     }
+}
+
+function bootstrapSesionDesdeToken() {
+    if (isset($_SESSION['id'])) {
+        return true;
+    }
+
+    $token = obtenerBearerToken();
+    if (!$token) {
+        return false;
+    }
+
+    $response = Supabase::request('/auth/v1/user', 'GET', null, $token);
+    if (($response['status'] ?? 0) !== 200 || !is_array($response['data'] ?? null)) {
+        return false;
+    }
+
+    $user = $response['data'];
+    $email = $user['email'] ?? '';
+    $rol = 'alumno';
+    if (strpos($email, '@udb.edu.sv') !== false && strpos($email, '@alumno.udb.edu.sv') === false) {
+        $rol = 'admin';
+    }
+
+    $_SESSION['id'] = $user['id'] ?? null;
+    $_SESSION['email'] = $email;
+    $_SESSION['nombre'] = $user['user_metadata']['full_name'] ?? explode('@', $email)[0];
+    $_SESSION['rol'] = $rol;
+    $_SESSION['access_token'] = $token;
+
+    return isset($_SESSION['id']);
+}
+
+function obtenerBearerToken() {
+    $headers = function_exists('getallheaders') ? getallheaders() : [];
+    $candidates = [
+        $_SERVER['HTTP_AUTHORIZATION'] ?? null,
+        $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? null,
+        $headers['Authorization'] ?? null,
+        $headers['authorization'] ?? null,
+    ];
+
+    foreach ($candidates as $candidate) {
+        if (!$candidate) {
+            continue;
+        }
+
+        if (preg_match('/Bearer\s+(.*)$/i', trim($candidate), $matches)) {
+            return trim($matches[1]);
+        }
+    }
+
+    return null;
 }

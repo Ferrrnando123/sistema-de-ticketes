@@ -16,6 +16,15 @@ const normalizeApiUrl = () => {
 
 const API_URL = normalizeApiUrl();
 
+const getStoredAccessToken = () => {
+  if (typeof window === 'undefined') return '';
+  try {
+    return window.localStorage.getItem('udb_ticket_token') || '';
+  } catch {
+    return '';
+  }
+};
+
 export const apiFetch = async (action, options = {}) => {
   const separator = API_URL.includes('?') ? '&' : '?';
 
@@ -30,6 +39,11 @@ export const apiFetch = async (action, options = {}) => {
     'Accept': 'application/json',
     ...(options.headers || {})
   };
+
+  const storedToken = getStoredAccessToken();
+  if (storedToken && !headers.Authorization) {
+    headers.Authorization = `Bearer ${storedToken}`;
+  }
 
   // Si hay body y es un FormData, no lo tocamos ni le forzamos Content-Type
   if (options.body instanceof FormData) {
