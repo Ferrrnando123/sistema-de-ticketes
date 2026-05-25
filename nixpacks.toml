@@ -2,5 +2,9 @@ providers = ["php", "node"]
 
 [phases.build]
 cmds = [
-  "cd frontend && npm install && npm run build"
+  "cd frontend && npm install && npm run build",
+  "chmod +x /app/start.sh"
 ]
+
+[start]
+cmd = "/app/start.sh"

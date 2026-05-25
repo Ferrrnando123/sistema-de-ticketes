@@ -1,14 +1,18 @@
+{
+    auto_https off
+}
+
 :{$PORT:80} {
     root * /app
 
-    # Ruta a la API PHP — se pasa a PHP-FPM
+    # Ruta a la API PHP — se pasa a PHP-FPM por TCP
     handle /api.php* {
-        php_fastcgi unix//run/php/php-fpm.sock {
+        php_fastcgi 127.0.0.1:9000 {
             root /app
         }
     }
 
-    # Para cualquier otra ruta, servir el frontend de React
+    # Para cualquier otra ruta, sirve el frontend React compilado
     handle {
         root * /app/frontend/dist
         try_files {path} /index.html
