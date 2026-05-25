@@ -211,7 +211,6 @@ const NuevoTicket = () => {
                 <option value="baja">Baja (No urgente)</option>
                 <option value="media">Media (Requiere atencion)</option>
                 <option value="alta">Alta (Critico / Bloqueante)</option>
-                <option value="critica">Critica (Impacto severo)</option>
               </select>
               <p className="text-[11px] text-gray-400 mt-2">Debes seleccionar la prioridad antes de enviar.</p>
             </div>

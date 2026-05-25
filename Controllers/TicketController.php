@@ -46,10 +46,6 @@ class TicketController {
         if (empty($data['asunto']) || empty($data['descripcion']) || empty($data['ubicacion'])) {
             jsonResponse(400, false, 'Asunto, descripción y ubicación son requeridos.');
         }
-        // Compatibilidad con esquemas donde prioridad aún no acepta "critica".
-        if ($data['prioridad'] === 'critica') {
-            $data['prioridad'] = 'alta';
-        }
         if (!in_array($data['prioridad'], ['baja', 'media', 'alta'], true)) {
             jsonResponse(422, false, 'Debes seleccionar una prioridad válida antes de crear el ticket.');
         }
