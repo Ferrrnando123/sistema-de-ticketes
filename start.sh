@@ -1,5 +1,6 @@
 #!/bin/bash
-echo "--- Iniciando PHP-FPM ---"
+set -e
+echo "--- Iniciando PHP-FPM en background ---"
 php-fpm -D
-echo "--- Iniciando Caddy ---"
-caddy run --config /app/Caddyfile --adapter caddyfile
+echo "--- PHP-FPM iniciado. Iniciando Caddy ---"
+exec caddy run --config /app/Caddyfile --adapter caddyfile

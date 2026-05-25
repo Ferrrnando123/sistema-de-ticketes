@@ -1,0 +1,5 @@
+# Forzar LF en scripts bash para evitar errores en Linux/Railway
+*.sh text eol=lf
+Caddyfile text eol=lf
+Procfile text eol=lf
+nixpacks.toml text eol=lf
