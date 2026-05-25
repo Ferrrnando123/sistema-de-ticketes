@@ -1,8 +1,4 @@
-[phases.setup]
-nixPkgs = ["php82", "php82Packages.composer", "nodejs_20"]
+providers = ["php", "node"]
 
 [phases.build]
-cmds = [
-  "cd frontend && npm install && npm run build",
-  "cp -a frontend/dist/. ./"
-]
+cmds = ["bash build.sh"]
