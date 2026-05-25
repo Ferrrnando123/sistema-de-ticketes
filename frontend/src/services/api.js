@@ -1,7 +1,24 @@
-const API_URL = import.meta.env.VITE_API_URL || '/api.php';
+const normalizeApiUrl = () => {
+  const envUrl = (import.meta.env.VITE_API_URL || '').trim();
+  const fallback = '/api.php';
+
+  if (!envUrl) return fallback;
+
+  // Si por error se dejo una URL local en Railway/produccion, usamos same-origin.
+  if (typeof window !== 'undefined') {
+    const isProdHost = !/^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname);
+    const envLooksLocal = /localhost|127\.0\.0\.1/i.test(envUrl);
+    if (isProdHost && envLooksLocal) return fallback;
+  }
+
+  return envUrl;
+};
+
+const API_URL = normalizeApiUrl();
 
 export const apiFetch = async (action, options = {}) => {
-  const url = `${API_URL}?action=${action}`;
+  const separator = API_URL.includes('?') ? '&' : '?';
+  const url = `${API_URL}${separator}action=${encodeURIComponent(action)}`;
 
   const headers = {
     'Accept': 'application/json',
@@ -20,11 +37,8 @@ export const apiFetch = async (action, options = {}) => {
   const fetchOptions = {
     ...options,
     headers,
-    credentials: 'init' // Required for PHP $_SESSION cookies
+    credentials: 'include'
   };
-
-  // Set include so cross-origin requests send cookies on localhost
-  fetchOptions.credentials = 'include';
 
   try {
     const response = await fetch(url, fetchOptions);
