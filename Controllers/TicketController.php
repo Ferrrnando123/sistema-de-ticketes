@@ -318,12 +318,35 @@ class TicketController {
                 jsonResponse(401, false, 'No se encontró el token de acceso en la sesión.');
             }
 
+            $ticketRes = Supabase::request("/rest/v1/tickets?select=id,user_id,email,asunto,estado&id=eq." . (int)$id . "&limit=1", 'GET', null, $token);
+            if (($ticketRes['status'] ?? 0) !== 200 || empty($ticketRes['data'][0])) {
+                jsonResponse(404, false, 'Ticket no encontrado.');
+            }
+
+            $ticket = $ticketRes['data'][0];
             $response = Supabase::request("/rest/v1/tickets?id=eq." . (int)$id, 'PATCH', [
                 'estado' => $nuevoEstado,
                 'updated_at' => date('c')
             ], $token);
 
             if ($response['status'] == 200 || $response['status'] == 204) {
+                if ($nuevoEstado === 'resuelto') {
+                    Supabase::requestAsService('/rest/v1/notificaciones', 'POST', [
+                        'user_id' => $ticket['user_id'],
+                        'titulo' => 'Tu ticket fue resuelto',
+                        'cuerpo' => 'El ticket #' . $ticket['id'] . ' (' . ($ticket['asunto'] ?? '') . ') fue marcado como resuelto.',
+                        'leida' => false,
+                        'ticket_id' => (int)$ticket['id']
+                    ]);
+                } elseif ($nuevoEstado === 'en_proceso') {
+                    Supabase::requestAsService('/rest/v1/notificaciones', 'POST', [
+                        'user_id' => $ticket['user_id'],
+                        'titulo' => 'Tu ticket está en proceso',
+                        'cuerpo' => 'El ticket #' . $ticket['id'] . ' ahora está siendo atendido.',
+                        'leida' => false,
+                        'ticket_id' => (int)$ticket['id']
+                    ]);
+                }
                 jsonResponse(200, true, 'Estado actualizado');
             }
             jsonResponse(500, false, 'Error al actualizar el estado', $response['data'] ?? null);
