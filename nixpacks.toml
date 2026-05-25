@@ -6,4 +6,4 @@ cmds = [
 ]
 
 [start]
-cmd = "php -S 0.0.0.0:${PORT:-8080} router.php"
+cmd = "bash ./start.sh"
