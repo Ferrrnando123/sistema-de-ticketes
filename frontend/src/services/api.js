@@ -18,7 +18,13 @@ const API_URL = normalizeApiUrl();
 
 export const apiFetch = async (action, options = {}) => {
   const separator = API_URL.includes('?') ? '&' : '?';
-  const url = `${API_URL}${separator}action=${encodeURIComponent(action)}`;
+
+  // Permite llamadas legacy como "endpoint&param=1" sin romper la API rutera.
+  const actionString = String(action || '');
+  const ampIndex = actionString.indexOf('&');
+  const endpoint = ampIndex >= 0 ? actionString.slice(0, ampIndex) : actionString;
+  const extraQuery = ampIndex >= 0 ? actionString.slice(ampIndex + 1) : '';
+  const url = `${API_URL}${separator}action=${encodeURIComponent(endpoint)}${extraQuery ? `&${extraQuery}` : ''}`;
 
   const headers = {
     'Accept': 'application/json',
