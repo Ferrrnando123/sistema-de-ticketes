@@ -89,13 +89,11 @@ class TicketController {
     public function recentTickets() {
         $limit = 7;
 
-        // Feed global para incentivar uso: intenta usar service_role (bypassa RLS).
+        // Feed global para incentivar uso: requiere service_role para ignorar RLS.
         $response = Supabase::requestAsService("/rest/v1/tickets?select=id,user_id,asunto,email,created_at,prioridad,estado&order=created_at.desc&limit=$limit", 'GET');
 
-        // Fallback: si no hay service_role, se mantiene el alcance del usuario por RLS.
         if (($response['status'] ?? 0) !== 200) {
-            $token = $_SESSION['access_token'];
-            $response = Supabase::request("/rest/v1/tickets?select=id,user_id,asunto,email,created_at,prioridad,estado&order=created_at.desc&limit=$limit", 'GET', null, $token);
+            jsonResponse(503, false, 'No se pudo cargar el carrusel global. Verifica la configuración del service role.');
         }
 
         $tickets = ($response['status'] == 200) ? ($response['data'] ?? []) : [];
