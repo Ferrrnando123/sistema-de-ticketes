@@ -1,0 +1,32 @@
+{
+  "insultos": [
+    "idiota", "imbecil", "estupido", "pendejo", "pendeja", "mierda", "puta", "puto",
+    "malparido", "malparida", "cerote", "hijueputa", "hijo de puta", "hija de puta",
+    "cabron", "cabrona", "verga", "culo", "culero", "culera", "maricon", "marica",
+    "zorra", "prostituta", "perra", "baboso", "babosa", "tarado", "tarada",
+    "inutil", "inservible", "asqueroso", "asquerosa", "comemierda", "come mierda",
+    "hdp", "ptm", "ctm", "fuck", "shit", "bitch", "asshole", "motherfucker"
+  ],
+  "sexual_pornografico": [
+    "porno", "pornografia", "pornografico", "pornografica", "xxx", "sexcam", "nudes",
+    "nude", "desnuda", "desnudo", "desnudos", "desnudas", "sexting", "sexo explicito",
+    "contenido sexual", "penetracion", "penetracion anal", "oral sex", "anal sex",
+    "blowjob", "handjob", "deepthroat", "cumshot", "gangbang", "incesto",
+    "bestialidad", "zoofilia", "pedo pornografia", "cp", "child porn", "pornhub"
+  ],
+  "violencia_terrorismo": [
+    "bomba", "explosivo", "detonar", "detonador", "masacre", "decapitar", "ejecutar",
+    "asesinar", "matar", "te voy a matar", "disparar", "tiroteo", "ataque armado",
+    "coche bomba", "suicida bomba", "fabricar bomba", "manual de bomba", "ihad",
+    "jihad", "isis", "daesh", "al qaeda", "taliban", "talibanes", "terrorista",
+    "terrorismo", "atentado", "radicalizar", "envenenar agua", "arma quimica",
+    "arma biologica", "napalm", "genocidio", "limpieza etnica"
+  ],
+  "autolesion": [
+    "suicidarme", "suicidate", "quitarme la vida", "autolesion", "cortarme",
+    "hacerme dano", "overdose", "sobredosis", "quiero morir", "me quiero matar"
+  ],
+  "spam_trol": [
+    "asdf", "qwer", "test test", "solo pruebo", "jajajaja", "xdxd", "spam spam"
+  ]
+}

@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { apiFetch } from '../services/api';
+import { useNavigate } from 'react-router-dom';
 import './MisTickets.css';
 
 const MisTickets = () => {
+  const navigate = useNavigate();
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,7 +21,7 @@ const MisTickets = () => {
       } else {
         setError(resp.message);
       }
-    } catch (err) {
+    } catch {
       setError('No se pudieron cargar los tickets.');
     } finally {
       setLoading(false);
@@ -28,15 +30,18 @@ const MisTickets = () => {
 
   const formatearFecha = (fechaISO) => {
     const fecha = new Date(fechaISO);
-    return fecha.toLocaleDateString('es-ES', { 
-      day: '2-digit', month: 'short', year: 'numeric',
-      hour: '2-digit', minute: '2-digit'
+    return fecha.toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   };
 
   const getStatusBadge = (estado) => {
     const statusClass = `status-badge status-${estado}`;
-    let text = estado.toUpperCase();
+    const text = estado.toUpperCase();
     return <span className={statusClass}>{text}</span>;
   };
 
@@ -63,7 +68,7 @@ const MisTickets = () => {
             <p>Si tienes un problema, no dudes en crear un nuevo ticket.</p>
           </div>
         ) : (
-          tickets.map(ticket => (
+          tickets.map((ticket) => (
             <div key={ticket.id} className="ticket-card">
               <div className="ticket-header">
                 <span className="ticket-id">#{ticket.id}</span>
@@ -71,7 +76,7 @@ const MisTickets = () => {
               </div>
               <h3 className="ticket-asunto">{ticket.asunto}</h3>
               <p className="ticket-desc">{ticket.descripcion}</p>
-              
+
               {ticket.foto_url && (
                 <div className="ticket-evidence">
                   <a href={ticket.foto_url} target="_blank" rel="noopener noreferrer">
@@ -80,7 +85,7 @@ const MisTickets = () => {
                 </div>
               )}
 
-              <div className="ticket-footer">
+              <div className="ticket-footer" style={{ gap: '0.6rem' }}>
                 <div className="ticket-meta">
                   <span className="meta-label">Ubicación: </span>
                   <strong>{ticket.ubicacion}</strong>
@@ -88,6 +93,11 @@ const MisTickets = () => {
                 <div className="ticket-meta">
                   <span className="meta-label">Fecha: </span>
                   {formatearFecha(ticket.created_at)}
+                </div>
+                <div style={{ marginTop: '0.65rem', display: 'flex', justifyContent: 'flex-end' }}>
+                  <button className="btn btn-outline" onClick={() => navigate(`/tickets/${ticket.id}`)}>
+                    Ver detalle / Chat
+                  </button>
                 </div>
               </div>
             </div>
@@ -99,3 +109,4 @@ const MisTickets = () => {
 };
 
 export default MisTickets;
+

@@ -57,6 +57,55 @@ switch ($action) {
         $tickets->guardar();
         break;
 
+    case 'get_recent_tickets':
+        validarSesion();
+        require 'Controllers/TicketController.php';
+        $tickets = new TicketController();
+        $tickets->recentTickets();
+        break;
+
+    case 'ticket_detalle':
+        validarSesion();
+        require 'Controllers/TicketController.php';
+        $tickets = new TicketController();
+        $tickets->detalle();
+        break;
+
+    case 'buscar_faq':
+        validarSesion();
+        require 'Controllers/TicketController.php';
+        $tickets = new TicketController();
+        $tickets->buscarFaq();
+        break;
+
+    case 'mensajes_ticket_listar':
+        validarSesion();
+        require 'Controllers/TicketController.php';
+        $tickets = new TicketController();
+        $tickets->listarMensajesTicket();
+        break;
+
+    case 'mensajes_ticket_enviar':
+        validarSesion();
+        require 'Controllers/TicketController.php';
+        $tickets = new TicketController();
+        $tickets->enviarMensajeTicket();
+        break;
+
+    case 'notificaciones_listar':
+        validarSesion();
+        require 'Controllers/TicketController.php';
+        $tickets = new TicketController();
+        $tickets->listarNotificaciones();
+        break;
+
+    case 'notificaciones_marcar_leida':
+        validarSesion();
+        require 'Controllers/TicketController.php';
+        $tickets = new TicketController();
+        $tickets->marcarNotificacionLeida();
+        break;
+
     case 'mis-tickets':
         validarSesion();
         require 'Controllers/TicketController.php';

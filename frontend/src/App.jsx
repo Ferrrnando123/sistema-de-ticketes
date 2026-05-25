@@ -10,6 +10,7 @@ import NuevoTicket from './pages/NuevoTicket';
 import MisTickets from './pages/MisTickets';
 import PanelSoporte from './pages/PanelSoporte';
 import Ayuda from './pages/Ayuda';
+import TicketDetalle from './pages/TicketDetalle';
 
 // Main Layout with Navbar
 import Layout from './components/Layout';
@@ -46,6 +47,7 @@ function AppRoutes() {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="nuevo-ticket" element={<NuevoTicket />} />
         <Route path="mis-tickets" element={<MisTickets />} />
+        <Route path="tickets/:id" element={<TicketDetalle />} />
         <Route path="ayuda" element={<Ayuda />} />
         
         {/* Admin only route */}
