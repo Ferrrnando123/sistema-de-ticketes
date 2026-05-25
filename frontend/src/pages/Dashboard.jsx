@@ -35,7 +35,7 @@ const ReportCard = ({ email, asunto, created_at, prioridad, estado, id, canOpen 
     <figure
       className={cn(
         'action-card',
-        'relative w-80 min-h-[180px] cursor-pointer items-center text-center mx-4 my-2 p-6 shadow-md',
+        'relative w-[92vw] max-w-[320px] sm:w-80 min-h-[180px] cursor-pointer items-center text-center mx-2 sm:mx-4 my-2 p-4 sm:p-6 shadow-md',
         'bg-white/50 dark:bg-zinc-900/50 hover:bg-white/80 dark:hover:bg-zinc-900/80'
       )}
     >
@@ -82,6 +82,7 @@ const ReportCard = ({ email, asunto, created_at, prioridad, estado, id, canOpen 
 const Dashboard = () => {
   const { user } = useAuth();
   const [recent, setRecent] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -92,6 +93,14 @@ const Dashboard = () => {
         setRecent([]);
       }
     })();
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)');
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
   }, []);
 
   const [firstRow, secondRow] = useMemo(() => {
@@ -146,6 +155,12 @@ const Dashboard = () => {
         <div className="relative flex w-full flex-col items-center justify-center overflow-hidden rounded-xl gap-10">
           {recent.length === 0 ? (
             <div className="text-sm text-gray-400 italic py-8">Sin actividad reciente para mostrar.</div>
+          ) : isMobile ? (
+            <div className="mobile-recent-list">
+              {recent.slice(0, 8).map((t) => (
+                <ReportCard key={t.id} {...t} canOpen={user?.rol === 'admin'} />
+              ))}
+            </div>
           ) : (
             <>
               <Marquee pauseOnHover className="[--duration:40s] [--gap:2rem]">

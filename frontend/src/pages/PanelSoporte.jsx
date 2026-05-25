@@ -173,6 +173,43 @@ const PanelSoporte = () => {
                 placeholder="Filtrar por usuario (email), asunto o #ID"
               />
             </div>
+                        <div className="mobile-ticket-list">
+              {filteredTickets.length === 0 && (
+                <div className="mobile-ticket-empty">No hay tickets que coincidan con el filtro.</div>
+              )}
+              {filteredTickets.map((t) => (
+                <article key={`mobile-${t.id}`} className="mobile-ticket-card">
+                  <div className="mobile-ticket-head">
+                    <strong>#{t.id}</strong>
+                    <span className={`prio-badge prio-${t.prioridad}`}>{t.prioridad}</span>
+                  </div>
+                  <div className="mobile-ticket-row"><span>Asunto:</span><strong>{t.asunto}</strong></div>
+                  <div className="mobile-ticket-row"><span>Usuario:</span><strong>{t.email}</strong></div>
+                  <div className="mobile-ticket-row"><span>Fecha:</span><strong>{new Date(t.created_at).toLocaleDateString()}</strong></div>
+                  <div className="mobile-ticket-row">
+                    <span>Estado:</span>
+                    <select
+                      className={`status-select status-${t.estado}`}
+                      value={t.estado}
+                      onChange={(e) => updateStatus(t.id, e.target.value)}
+                      disabled={updatingId === t.id}
+                    >
+                      <option value="abierto">Abierto</option>
+                      <option value="en_proceso">En Proceso</option>
+                      <option value="resuelto">Resuelto</option>
+                    </select>
+                  </div>
+                  <div className="mobile-ticket-actions">
+                    <Link to={`/tickets/${t.id}`} className="btn btn-outline">Detalle/Chat</Link>
+                    {t.foto_url ? (
+                      <a href={t.foto_url} target="_blank" rel="noopener noreferrer" className="btn btn-outline">Ver Imagen</a>
+                    ) : (
+                      <span className="text-gray-400 text-xs italic">Sin imagen</span>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
             <div className="table-responsive">
               <table className="admin-table">
                 <thead>
@@ -250,3 +287,4 @@ const PanelSoporte = () => {
 };
 
 export default PanelSoporte;
+

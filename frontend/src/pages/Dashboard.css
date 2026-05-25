@@ -28,6 +28,13 @@
   margin-top: 2rem;
 }
 
+.mobile-recent-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
 .action-card {
   background-color: var(--bg-card);
   border-radius: 12px;
@@ -121,5 +128,20 @@
 
   .recent-activity-section {
     margin-top: 1rem;
+  }
+
+  .mobile-recent-list .action-card {
+    width: 100%;
+    min-height: auto;
+    margin: 0;
+    padding: 1rem;
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  .mobile-recent-list .action-card blockquote {
+    font-size: 0.92rem;
+    padding: 0;
+    margin-top: 0.5rem;
   }
 }
