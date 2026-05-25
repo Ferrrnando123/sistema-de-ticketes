@@ -330,22 +330,38 @@ class TicketController {
             ], $token);
 
             if ($response['status'] == 200 || $response['status'] == 204) {
+                $notificacionPayload = null;
                 if ($nuevoEstado === 'resuelto') {
-                    Supabase::requestAsService('/rest/v1/notificaciones', 'POST', [
+                    $notificacionPayload = [
                         'user_id' => $ticket['user_id'],
                         'titulo' => 'Tu ticket fue resuelto',
                         'cuerpo' => 'El ticket #' . $ticket['id'] . ' (' . ($ticket['asunto'] ?? '') . ') fue marcado como resuelto.',
                         'leida' => false,
                         'ticket_id' => (int)$ticket['id']
-                    ]);
+                    ];
                 } elseif ($nuevoEstado === 'en_proceso') {
-                    Supabase::requestAsService('/rest/v1/notificaciones', 'POST', [
+                    $notificacionPayload = [
                         'user_id' => $ticket['user_id'],
                         'titulo' => 'Tu ticket está en proceso',
                         'cuerpo' => 'El ticket #' . $ticket['id'] . ' ahora está siendo atendido.',
                         'leida' => false,
                         'ticket_id' => (int)$ticket['id']
-                    ]);
+                    ];
+                }
+
+                if ($notificacionPayload) {
+                    $notifResponse = Supabase::requestAsService('/rest/v1/notificaciones', 'POST', $notificacionPayload);
+                    if (($notifResponse['status'] ?? 0) < 200 || ($notifResponse['status'] ?? 0) >= 300) {
+                        @file_put_contents(
+                            dirname(__DIR__) . DIRECTORY_SEPARATOR . 'debug_log.txt',
+                            '[' . date('Y-m-d H:i:s') . '] [notificacion_error] ' . json_encode([
+                                'ticket_id' => (int)$ticket['id'],
+                                'estado' => $nuevoEstado,
+                                'response' => $notifResponse
+                            ], JSON_UNESCAPED_UNICODE) . PHP_EOL,
+                            FILE_APPEND
+                        );
+                    }
                 }
                 jsonResponse(200, true, 'Estado actualizado');
             }

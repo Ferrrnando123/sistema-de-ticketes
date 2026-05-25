@@ -115,6 +115,7 @@
   gap: 10px;
   flex: 0 0 auto;
   overflow: visible;
+  position: relative;
 }
 
 .avatar {
@@ -174,8 +175,9 @@
 
 .notif-wrap {
   position: relative;
-  width: 34px;
-  flex: 0 0 34px;
+  width: auto;
+  flex: 0 0 auto;
+  display: inline-flex;
 }
 
 .notif-btn {
@@ -214,8 +216,8 @@
   position: absolute;
   right: 0;
   bottom: calc(100% + 10px);
-  width: 220px;
-  max-width: 220px;
+  width: 224px;
+  max-width: 224px;
   max-height: min(62vh, 420px);
   background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(14px);
@@ -285,6 +287,7 @@
 .notif-item-title {
   font-size: 13px;
   color: #0f172a;
+  overflow-wrap: anywhere;
 }
 
 .notif-item-body {
@@ -293,6 +296,7 @@
   margin-top: 2px;
   white-space: normal;
   word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .main-content {
