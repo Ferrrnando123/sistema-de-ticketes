@@ -114,6 +114,7 @@
   align-items: center;
   gap: 10px;
   flex: 0 0 auto;
+  overflow: visible;
 }
 
 .avatar {
@@ -172,8 +173,9 @@
 }
 
 .notif-wrap {
-  position: static;
-  width: 100%;
+  position: relative;
+  width: 34px;
+  flex: 0 0 34px;
 }
 
 .notif-btn {
@@ -210,11 +212,10 @@
 
 .notif-panel {
   position: absolute;
-  left: 12px;
-  right: 12px;
+  right: 0;
   bottom: calc(100% + 10px);
-  width: auto;
-  max-width: none;
+  width: 256px;
+  max-width: calc(100vw - 24px);
   max-height: min(62vh, 420px);
   background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(14px);
