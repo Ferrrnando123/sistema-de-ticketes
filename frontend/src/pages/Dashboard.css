@@ -24,6 +24,10 @@
   margin-bottom: 4rem;
 }
 
+.recent-activity-section {
+  margin-top: 2rem;
+}
+
 .action-card {
   background-color: var(--bg-card);
   border-radius: 12px;
@@ -75,4 +79,47 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 900px) {
+  .action-cards {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .action-card {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .page-header {
+    margin-bottom: 1.2rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+
+  .page-header p {
+    font-size: 0.95rem;
+  }
+
+  .action-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .action-card h3 {
+    font-size: 1.1rem;
+  }
+
+  .action-card p {
+    font-size: 0.9rem;
+  }
+
+  .recent-activity-section {
+    margin-top: 1rem;
+  }
 }

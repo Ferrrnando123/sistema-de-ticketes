@@ -11,6 +11,7 @@ const Layout = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [notifOpen, setNotifOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notifs, setNotifs] = useState([]);
   const notifWrapRef = useRef(null);
   const unreadCount = useMemo(() => notifs.filter(n => !n.leida).length, [notifs]);
@@ -47,6 +48,16 @@ const Layout = () => {
     return () => document.removeEventListener('mousedown', onClickOutside);
   }, [notifOpen]);
 
+  useEffect(() => {
+    const onResize = () => {
+      if (window.innerWidth > 768) setMobileMenuOpen(false);
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  const closeMobileMenu = () => setMobileMenuOpen(false);
+
   const markRead = async (id) => {
     try {
       await apiFetch('notificaciones_marcar_leida', { method: 'PATCH', body: { id } });
@@ -58,28 +69,28 @@ const Layout = () => {
 
   return (
     <div className="layout-container">
-      <aside className="sidebar">
+      <aside className={`sidebar ${mobileMenuOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <h2>UDB Tickets</h2>
           <span className="badge">{user?.rol === 'admin' ? 'Admin' : 'Alumno'}</span>
         </div>
         
         <nav className="sidebar-nav">
-          <Link to="/dashboard" className="nav-link">
+          <Link to="/dashboard" className="nav-link" onClick={closeMobileMenu}>
             <Home size={20} /> Dashboard
           </Link>
-          <Link to="/mis-tickets" className="nav-link">
+          <Link to="/mis-tickets" className="nav-link" onClick={closeMobileMenu}>
             <Ticket size={20} /> Mis Tickets
           </Link>
-          <Link to="/nuevo-ticket" className="nav-link">
+          <Link to="/nuevo-ticket" className="nav-link" onClick={closeMobileMenu}>
             <span className="plus-icon">+</span> Nuevo Ticket
           </Link>
-          <Link to="/ayuda" className="nav-link">
+          <Link to="/ayuda" className="nav-link" onClick={closeMobileMenu}>
             <HelpCircle size={20} /> Ayuda
           </Link>
           
           {user?.rol === 'admin' && (
-            <Link to="/panel-soporte" className="nav-link admin-link">
+            <Link to="/panel-soporte" className="nav-link admin-link" onClick={closeMobileMenu}>
               <LayoutDashboard size={20} /> Panel Soporte
             </Link>
           )}
@@ -154,9 +165,19 @@ const Layout = () => {
         </div>
       </aside>
       
+      {mobileMenuOpen && <button className="mobile-overlay" onClick={closeMobileMenu} aria-label="Cerrar menu" />}
+
       <main className="main-content">
         <header className="mobile-header">
-           <h2>UDB Tickets</h2>
+          <button
+            type="button"
+            className="mobile-menu-btn"
+            onClick={() => setMobileMenuOpen((v) => !v)}
+            aria-label="Abrir menu"
+          >
+            ☰
+          </button>
+          <h2>UDB Tickets</h2>
         </header>
         <div className="content-wrapper">
           <Outlet />

@@ -1,6 +1,7 @@
 .page-container {
   max-width: 800px;
   margin: 0 auto;
+  width: 100%;
 }
 
 .animate-fade {
@@ -80,6 +81,10 @@
   border-top: 1px solid var(--border-color);
 }
 
+.form-card {
+  overflow: hidden;
+}
+
 .btn-outline {
   border: 1px solid var(--secondary-color);
   background-color: transparent;
@@ -92,8 +97,45 @@
 }
 
 @media (max-width: 600px) {
+  .page-title {
+    font-size: 1.45rem;
+    line-height: 1.25;
+  }
+
+  .page-subtitle {
+    margin-bottom: 1.25rem;
+    font-size: 0.95rem;
+  }
+
+  .card {
+    padding: 1rem;
+    border-radius: 10px;
+  }
+
   .form-row {
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
+  }
+
+  .custom-form {
+    gap: 1rem;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-size: 16px;
+    padding: 0.7rem 0.85rem;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+  }
+
+  .form-actions .btn {
+    width: 100%;
   }
 }

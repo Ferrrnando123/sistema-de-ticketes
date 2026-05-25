@@ -128,7 +128,7 @@ const PanelSoporte = () => {
               <h3 style={{ marginBottom: '0.75rem' }}>Estadísticas Globales</h3>
             </BlurFade>
 
-            <div className="grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="charts-grid">
               <div className="card" style={{ padding: '1rem' }}>
                 <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Tickets por estado</div>
                 <div style={{ width: '100%', height: 280 }}>
@@ -164,23 +164,13 @@ const PanelSoporte = () => {
           </div>
 
           <div className="card admin-table-container">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.8rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+            <div className="table-topbar">
               <h3>Últimos 50 Tickets</h3>
               <input
+                className="tickets-filter-input"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Filtrar por usuario (email), asunto o #ID"
-                style={{
-                  minWidth: '280px',
-                  maxWidth: '420px',
-                  width: '100%',
-                  border: '1px solid var(--border-color)',
-                  background: 'var(--bg-card)',
-                  color: 'var(--text-dark)',
-                  borderRadius: '10px',
-                  padding: '0.55rem 0.75rem',
-                  outline: 'none'
-                }}
               />
             </div>
             <div className="table-responsive">

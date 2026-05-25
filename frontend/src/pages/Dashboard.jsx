@@ -139,7 +139,7 @@ const Dashboard = () => {
         </Link>
       </div>
 
-      <div className="mt-64 pb-12 w-full max-w-[1200px] mx-auto px-4 lg:px-0">
+      <div className="recent-activity-section mt-8 md:mt-12 pb-8 md:pb-12 w-full max-w-[1200px] mx-auto px-2 sm:px-4 lg:px-0">
         <h2 className="text-xl font-bold text-[#003366] dark:text-[#ffcc00] mb-8 pl-2 tracking-tight">
           Actividad Reciente del Soporte
         </h2>

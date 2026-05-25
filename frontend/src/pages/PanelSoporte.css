@@ -46,11 +46,13 @@
 
 .table-responsive {
   overflow-x: auto;
+  width: 100%;
 }
 
 .admin-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 860px;
 }
 
 .admin-table th,
@@ -158,4 +160,66 @@
 @keyframes skeleton-loading {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.table-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.tickets-filter-input {
+  min-width: 280px;
+  max-width: 420px;
+  width: 100%;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-dark);
+  border-radius: 10px;
+  padding: 0.55rem 0.75rem;
+  outline: none;
+}
+
+.tickets-filter-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.12);
+}
+
+@media (max-width: 1024px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-value {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .stat-card {
+    padding: 1rem;
+  }
+
+  .stat-title {
+    font-size: 0.8rem;
+  }
+
+  .tickets-filter-input {
+    min-width: 100%;
+    max-width: 100%;
+    font-size: 16px;
+  }
+
+  .table-topbar h3 {
+    font-size: 1rem;
+  }
 }

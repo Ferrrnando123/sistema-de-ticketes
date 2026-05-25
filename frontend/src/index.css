@@ -76,6 +76,14 @@ body {
   min-height: 100vh;
 }
 
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+
 a {
   text-decoration: none;
   color: var(--primary-color);
@@ -139,4 +147,14 @@ button {
   color: #fff;
   background-color: var(--danger-color);
   border-color: var(--danger-color);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 0.75rem;
+  }
+
+  .btn {
+    min-height: 40px;
+  }
 }
